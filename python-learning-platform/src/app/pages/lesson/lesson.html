@@ -1,0 +1,168 @@
+<div class="lesson-page-container" *ngIf="currentLesson">
+  <!-- 课程头部信息 -->
+  <div class="lesson-header">
+    <mat-card class="header-card">
+      <mat-card-content>
+        <div class="lesson-info">
+          <div class="lesson-meta">
+            <mat-chip-set>
+              <mat-chip [class]="'type-' + currentLesson.type">
+                <mat-icon>{{ getLessonTypeIcon() }}</mat-icon>
+                {{ getLessonTypeName() }}
+              </mat-chip>
+            </mat-chip-set>
+            <div class="lesson-status" *ngIf="isCompleted()">
+              <mat-icon class="completed-icon">check_circle</mat-icon>
+              <span>已完成</span>
+            </div>
+          </div>
+
+          <h1 class="lesson-title">{{ currentLesson.title }}</h1>
+
+          <div class="lesson-actions">
+            <button
+              mat-button
+              color="primary"
+              (click)="goToPreviousLesson()"
+              [disabled]="!getPreviousLesson()">
+              <mat-icon>navigate_before</mat-icon>
+              上一课
+            </button>
+
+            <button
+              mat-raised-button
+              color="primary"
+              (click)="markAsCompleted()"
+              [disabled]="isCompleted()">
+              <mat-icon>{{ isCompleted() ? 'check_circle' : 'check' }}</mat-icon>
+              {{ isCompleted() ? '已完成' : '标记完成' }}
+            </button>
+
+            <button
+              mat-button
+              color="primary"
+              (click)="goToNextLesson()"
+              [disabled]="!getNextLesson()">
+              下一课
+              <mat-icon>navigate_next</mat-icon>
+            </button>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- 课程内容区域 -->
+  <div class="lesson-body">
+    <div class="content-section">
+      <!-- 课程内容 -->
+      <app-lesson-content [lesson]="currentLesson"></app-lesson-content>
+
+      <!-- 代码示例和编辑器 -->
+      <div class="code-section" *ngIf="currentLesson.codeExample">
+        <mat-card class="code-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>code</mat-icon>
+              代码示例
+            </mat-card-title>
+            <mat-card-subtitle>试试运行这段代码</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <!-- 使用增强的代码块组件 -->
+            <app-enhanced-code-block
+              [code]="currentLesson.codeExample"
+              [editable]="false"
+              [autoExecute]="true">
+            </app-enhanced-code-block>
+          </mat-card-content>
+        </mat-card>
+      </div>
+
+      <!-- 练习区域 -->
+      <div class="exercise-section" *ngIf="currentLesson.exercise">
+        <mat-card class="exercise-card">
+          <mat-card-header>
+            <mat-card-title>
+              <mat-icon>assignment</mat-icon>
+              编程练习
+            </mat-card-title>
+            <mat-card-subtitle>{{ currentLesson.exercise.description }}</mat-card-subtitle>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="exercise-hints" *ngIf="currentLesson.exercise.hints">
+              <h4>提示：</h4>
+              <ul>
+                <li *ngFor="let hint of currentLesson.exercise.hints">{{ hint }}</li>
+              </ul>
+            </div>
+
+            <app-code-editor
+              [initialCode]="currentLesson.exercise.initialCode"
+              [readOnly]="false">
+            </app-code-editor>
+
+            <div class="expected-output" *ngIf="currentLesson.exercise.expectedOutput">
+              <h4>期望输出：</h4>
+              <pre class="output-preview">{{ currentLesson.exercise.expectedOutput }}</pre>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+
+    <!-- 导航侧边栏 -->
+    <div class="navigation-section">
+      <mat-card class="navigation-card">
+        <mat-card-header>
+          <mat-card-title>课程导航</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="lesson-navigation">
+            <div class="nav-item previous" *ngIf="getPreviousLesson()">
+              <button
+                mat-button
+                class="nav-button"
+                (click)="goToPreviousLesson()">
+                <div class="nav-content">
+                  <mat-icon>navigate_before</mat-icon>
+                  <div class="nav-text">
+                    <span class="nav-label">上一课</span>
+                    <span class="nav-title">{{ getPreviousLesson()?.title }}</span>
+                  </div>
+                </div>
+              </button>
+            </div>
+
+            <div class="nav-item next" *ngIf="getNextLesson()">
+              <button
+                mat-button
+                class="nav-button"
+                (click)="goToNextLesson()">
+                <div class="nav-content">
+                  <div class="nav-text">
+                    <span class="nav-label">下一课</span>
+                    <span class="nav-title">{{ getNextLesson()?.title }}</span>
+                  </div>
+                  <mat-icon>navigate_next</mat-icon>
+                </div>
+              </button>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>
+
+<!-- 加载状态 -->
+<div class="loading-container" *ngIf="!currentLesson">
+  <mat-card>
+    <mat-card-content>
+      <div class="loading-content">
+        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+        <p>加载课程内容中...</p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

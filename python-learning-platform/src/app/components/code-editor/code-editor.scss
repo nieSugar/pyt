@@ -1,0 +1,212 @@
+.code-editor-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--surface-color);
+
+  .editor-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: var(--toolbar-bg);
+    border-bottom: 1px solid var(--border-color);
+
+    .toolbar-left {
+      .editor-title {
+        font-weight: 600;
+        color: var(--text-primary);
+        font-size: 14px;
+      }
+    }
+
+    .toolbar-right {
+      display: flex;
+      gap: 8px;
+
+      .btn {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+
+        &.btn-primary {
+          background: var(--primary-color);
+          color: white;
+
+          &:hover:not(:disabled) {
+            background: var(--primary-hover);
+          }
+        }
+
+        &.btn-secondary {
+          background: var(--secondary-bg);
+          color: var(--text-primary);
+          border: 1px solid var(--border-color);
+
+          &:hover:not(:disabled) {
+            background: var(--secondary-hover);
+          }
+        }
+      }
+    }
+  }
+
+  .editor-wrapper {
+    flex: 1;
+    position: relative;
+    min-height: 300px;
+
+    .monaco-editor-container {
+      width: 100%;
+      height: 100%;
+      min-height: 300px;
+    }
+  }
+
+  .loading-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+
+    .loading-content {
+      text-align: center;
+      color: var(--text-secondary);
+
+      .spinner {
+        margin-bottom: 12px;
+      }
+
+      p {
+        margin: 0;
+        font-size: 14px;
+      }
+    }
+  }
+
+  .execution-result {
+    border-top: 1px solid var(--border-color);
+    background: var(--result-bg);
+
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background: var(--result-header-bg);
+      border-bottom: 1px solid var(--border-color);
+
+      .result-title {
+        font-weight: 600;
+        color: var(--text-primary);
+        font-size: 14px;
+      }
+
+      .execution-time {
+        font-size: 12px;
+        color: var(--text-secondary);
+        background: var(--tag-bg);
+        padding: 4px 8px;
+        border-radius: 4px;
+      }
+    }
+
+    .output {
+      padding: 16px;
+      max-height: 200px;
+      overflow-y: auto;
+
+      pre {
+        margin: 0;
+        font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+        font-size: 13px;
+        line-height: 1.4;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+      }
+
+      &.success {
+        background: var(--success-bg);
+        color: var(--success-text);
+        border-left: 4px solid var(--success-border);
+      }
+
+      &.error {
+        background: var(--error-bg);
+        color: var(--error-text);
+        border-left: 4px solid var(--error-border);
+
+        .error-header {
+          font-weight: 600;
+          margin-bottom: 8px;
+          font-size: 14px;
+        }
+      }
+
+      &.empty {
+        background: var(--info-bg);
+        color: var(--info-text);
+        border-left: 4px solid var(--info-border);
+        font-style: italic;
+
+        p {
+          margin: 0;
+        }
+      }
+    }
+  }
+
+  .keyboard-shortcuts {
+    padding: 8px 16px;
+    background: var(--hint-bg);
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+
+    small {
+      color: var(--text-secondary);
+      font-size: 12px;
+    }
+  }
+}
+
+// 旋转动画
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+
+  &.large {
+    width: 24px;
+    height: 24px;
+    border-width: 3px;
+  }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

@@ -1,0 +1,334 @@
+.home-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+
+  // 欢迎横幅
+  .welcome-banner {
+    background: linear-gradient(135deg, var(--mat-primary-500, #2196f3), var(--mat-primary-700, #1976d2));
+    border-radius: 16px;
+    padding: 48px 32px;
+    margin-bottom: 32px;
+    color: white;
+    text-align: center;
+
+    .banner-content {
+      .welcome-text {
+        margin-bottom: 32px;
+
+        h1 {
+          font-size: 2.5rem;
+          font-weight: 600;
+          margin: 0 0 16px 0;
+          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        p {
+          font-size: 1.2rem;
+          margin: 0;
+          opacity: 0.9;
+        }
+      }
+
+      .banner-actions {
+        .cta-button {
+          font-size: 1.1rem;
+          padding: 12px 32px;
+          border-radius: 24px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+          transition: all 0.3s ease;
+
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+          }
+
+          mat-icon {
+            margin-right: 8px;
+          }
+        }
+      }
+    }
+  }
+
+  // 学习进度概览
+  .progress-overview {
+    margin-bottom: 32px;
+
+    .progress-card {
+      .progress-stats {
+        .progress-info {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 16px;
+
+          .progress-text {
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+
+            .completed {
+              font-size: 2rem;
+              font-weight: 600;
+              color: var(--mat-primary-600, #1e88e5);
+            }
+
+            .separator {
+              font-size: 1.5rem;
+              color: var(--mat-text-secondary, rgba(0, 0, 0, 0.6));
+            }
+
+            .total {
+              font-size: 1.5rem;
+              color: var(--mat-text-secondary, rgba(0, 0, 0, 0.6));
+            }
+
+            .label {
+              margin-left: 8px;
+              font-size: 1rem;
+              color: var(--mat-text-secondary, rgba(0, 0, 0, 0.6));
+            }
+          }
+
+          .progress-percentage {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--mat-primary-600, #1e88e5);
+          }
+        }
+
+        .main-progress-bar {
+          height: 12px;
+          border-radius: 6px;
+          overflow: hidden;
+        }
+      }
+    }
+  }
+
+  // 统计卡片
+  .stats-section {
+    margin-bottom: 32px;
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+
+      .stat-card {
+        transition: all 0.2s ease;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-content {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+
+          .stat-icon {
+            font-size: 2.5rem;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            &.lessons {
+              background-color: var(--mat-primary-100, #bbdefb);
+              color: var(--mat-primary-600, #1e88e5);
+            }
+
+            &.streak {
+              background-color: var(--mat-warn-100, #ffecb3);
+              color: var(--mat-warn-600, #fb8c00);
+            }
+
+            &.time {
+              background-color: var(--mat-success-100, #c8e6c9);
+              color: var(--mat-success-600, #43a047);
+            }
+          }
+
+          .stat-info {
+            .stat-number {
+              font-size: 1.8rem;
+              font-weight: 600;
+              color: var(--mat-text-primary, rgba(0, 0, 0, 0.87));
+            }
+
+            .stat-label {
+              font-size: 0.9rem;
+              color: var(--mat-text-secondary, rgba(0, 0, 0, 0.6));
+            }
+          }
+        }
+      }
+    }
+  }
+
+  // 推荐课程
+  .recommended-lessons {
+    margin-bottom: 32px;
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 0 0 24px 0;
+      color: var(--mat-text-primary, rgba(0, 0, 0, 0.87));
+    }
+
+    .lessons-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+
+      .lesson-card {
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border-radius: 12px;
+
+        &:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .lesson-avatar {
+          background-color: var(--mat-primary-100, #bbdefb);
+          color: var(--mat-primary-600, #1e88e5);
+        }
+
+        .lesson-type-chip {
+          margin: 8px 0;
+
+          mat-chip {
+            font-size: 0.8rem;
+          }
+        }
+      }
+    }
+  }
+
+  // 成就系统
+  .achievements-section {
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 0 0 24px 0;
+      color: var(--mat-text-primary, rgba(0, 0, 0, 0.87));
+    }
+
+    .achievements-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+
+      .achievement-card {
+        transition: all 0.2s ease;
+        border-radius: 12px;
+
+        &.unlocked {
+          border: 2px solid var(--mat-success-300, #81c784);
+          background: linear-gradient(135deg,
+            var(--mat-success-50, #e8f5e8),
+            var(--mat-success-100, #c8e6c9));
+
+          .achievement-icon.unlocked {
+            color: var(--mat-success-600, #43a047);
+          }
+        }
+
+        &:not(.unlocked) {
+          opacity: 0.6;
+          filter: grayscale(0.5);
+        }
+
+        .achievement-content {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+
+          .achievement-icon {
+            font-size: 2.5rem;
+            width: 2.5rem;
+            height: 2.5rem;
+            color: var(--mat-text-secondary, rgba(0, 0, 0, 0.6));
+          }
+
+          .achievement-info {
+            flex: 1;
+
+            .achievement-title {
+              font-size: 1.1rem;
+              font-weight: 600;
+              margin-bottom: 4px;
+              color: var(--mat-text-primary, rgba(0, 0, 0, 0.87));
+            }
+
+            .achievement-description {
+              font-size: 0.9rem;
+              color: var(--mat-text-secondary, rgba(0, 0, 0, 0.6));
+            }
+          }
+
+          .unlock-badge {
+            color: var(--mat-success-500, #4caf50);
+            font-size: 1.5rem;
+          }
+        }
+      }
+    }
+  }
+}
+
+// 响应式设计
+@media (max-width: 768px) {
+  .home-container {
+    padding: 16px;
+
+    .welcome-banner {
+      padding: 32px 24px;
+
+      .banner-content .welcome-text h1 {
+        font-size: 2rem;
+      }
+    }
+
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .lessons-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .achievements-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .home-container {
+    padding: 12px;
+
+    .welcome-banner {
+      padding: 24px 16px;
+
+      .banner-content .welcome-text h1 {
+        font-size: 1.8rem;
+      }
+    }
+  }
+}
+
+// 深色主题适配
+:host-context(.dark-theme) {
+  .welcome-banner {
+    background: linear-gradient(135deg, var(--mat-primary-600, #1e88e5), var(--mat-primary-800, #1565c0)) !important;
+  }
+}

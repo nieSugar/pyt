@@ -1,0 +1,181 @@
+<div class="home-container">
+  <!-- 欢迎横幅 -->
+  <section class="welcome-banner">
+    <div class="banner-content">
+      <div class="welcome-text">
+        <h1>欢迎来到 Python 学习平台</h1>
+        <p>从零开始，掌握 Python 编程技能</p>
+      </div>
+      <div class="banner-actions">
+        <button
+          mat-raised-button
+          color="primary"
+          class="cta-button"
+          (click)="startLearning()"
+          *ngIf="stats.completedLessons === 0">
+          <mat-icon>play_arrow</mat-icon>
+          开始学习
+        </button>
+        <button
+          mat-raised-button
+          color="primary"
+          class="cta-button"
+          (click)="continueLearning()"
+          *ngIf="stats.completedLessons > 0">
+          <mat-icon>play_arrow</mat-icon>
+          继续学习
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 学习进度概览 -->
+  <section class="progress-overview" *ngIf="course && userProgress">
+    <!-- 进度图表组件 -->
+    <app-progress-chart
+      [course]="course"
+      [userProgress]="userProgress">
+    </app-progress-chart>
+
+    <mat-card class="progress-card">
+      <mat-card-header>
+        <mat-card-title>学习进度</mat-card-title>
+        <mat-card-subtitle>{{ course.title }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="progress-stats">
+          <div class="progress-info">
+            <div class="progress-text">
+              <span class="completed">{{ stats.completedLessons }}</span>
+              <span class="separator">/</span>
+              <span class="total">{{ stats.totalLessons }}</span>
+              <span class="label">课程完成</span>
+            </div>
+            <div class="progress-percentage">
+              {{ getProgressPercentage() | number:'1.0-0' }}%
+            </div>
+          </div>
+          <mat-progress-bar
+            mode="determinate"
+            [value]="getProgressPercentage()"
+            class="main-progress-bar">
+          </mat-progress-bar>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </section>
+
+  <!-- 统计卡片 -->
+  <section class="stats-section">
+    <div class="stats-grid">
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <div class="stat-content">
+            <mat-icon class="stat-icon lessons">school</mat-icon>
+            <div class="stat-info">
+              <div class="stat-number">{{ stats.completedLessons }}</div>
+              <div class="stat-label">已完成课程</div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <div class="stat-content">
+            <mat-icon class="stat-icon streak">local_fire_department</mat-icon>
+            <div class="stat-info">
+              <div class="stat-number">{{ stats.currentStreak }}</div>
+              <div class="stat-label">连续学习天数</div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card">
+        <mat-card-content>
+          <div class="stat-content">
+            <mat-icon class="stat-icon time">schedule</mat-icon>
+            <div class="stat-info">
+              <div class="stat-number">{{ stats.timeSpent }}</div>
+              <div class="stat-label">学习时长(分钟)</div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </section>
+
+  <!-- 学习路径推荐 -->
+  <section class="learning-path-section" *ngIf="course && userProgress">
+    <app-learning-path
+      [course]="course"
+      [userProgress]="userProgress">
+    </app-learning-path>
+  </section>
+
+  <!-- 推荐课程 -->
+  <section class="recommended-lessons" *ngIf="nextLessons.length > 0">
+    <h2>推荐学习</h2>
+    <div class="lessons-grid">
+      <mat-card
+        *ngFor="let lesson of nextLessons"
+        class="lesson-card"
+        [routerLink]="['/lesson', lesson.id]">
+        <mat-card-header>
+          <mat-icon mat-card-avatar class="lesson-avatar">
+            {{ getLessonTypeIcon(lesson.type) }}
+          </mat-icon>
+          <mat-card-title>{{ lesson.title }}</mat-card-title>
+          <mat-card-subtitle>{{ lesson.moduleName }}</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="lesson-type-chip">
+            <mat-chip-set>
+              <mat-chip>
+                {{ lesson.type === 'tutorial' ? '教程' :
+                   lesson.type === 'exercise' ? '练习' : '测验' }}
+              </mat-chip>
+            </mat-chip-set>
+          </div>
+        </mat-card-content>
+        <mat-card-actions>
+          <button mat-button color="primary">
+            <mat-icon>play_arrow</mat-icon>
+            开始学习
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </section>
+
+  <!-- 成就系统 -->
+  <section class="achievements-section">
+    <h2>学习成就</h2>
+    <div class="achievements-grid">
+      <mat-card
+        *ngFor="let achievement of achievements"
+        class="achievement-card"
+        [class.unlocked]="achievement.unlocked">
+        <mat-card-content>
+          <div class="achievement-content">
+            <mat-icon
+              class="achievement-icon"
+              [class.unlocked]="achievement.unlocked">
+              {{ achievement.icon }}
+            </mat-icon>
+            <div class="achievement-info">
+              <div class="achievement-title">{{ achievement.title }}</div>
+              <div class="achievement-description">{{ achievement.description }}</div>
+            </div>
+            <mat-icon
+              *ngIf="achievement.unlocked"
+              class="unlock-badge">
+              verified
+            </mat-icon>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </section>
+</div>

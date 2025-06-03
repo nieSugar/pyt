@@ -1,0 +1,839 @@
+/* 现代化Python学习平台样式 */
+
+// 导入现代字体
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+// 全局重置和基础样式
+* {
+  box-sizing: border-box;
+}
+
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+  font-weight: 400;
+  background: var(--background-gradient);
+  min-height: 100vh;
+}
+
+// 现代化浅色主题变量
+:root,
+.light-theme {
+  // 主色调 - 现代蓝紫渐变
+  --primary-color: #6366f1;
+  --primary-hover: #4f46e5;
+  --primary-light: #a5b4fc;
+  --primary-dark: #3730a3;
+
+  // 次要色调
+  --secondary-color: #64748b;
+  --secondary-hover: #475569;
+  --accent-color: #06b6d4;
+  --accent-hover: #0891b2;
+
+  // 背景色 - 渐变和层次
+  --background-color: #ffffff;
+  --background-gradient: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  --surface-color: #ffffff;
+  --surface-elevated: #ffffff;
+  --toolbar-bg: rgba(255, 255, 255, 0.8);
+  --sidebar-bg: rgba(248, 250, 252, 0.95);
+  --card-bg: rgba(255, 255, 255, 0.7);
+
+  // 文字颜色
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  --text-inverse: #ffffff;
+
+  // 边框和分割线
+  --border-color: rgba(226, 232, 240, 0.8);
+  --border-light: rgba(241, 245, 249, 0.6);
+  --divider-color: rgba(226, 232, 240, 0.5);
+
+  // 状态颜色 - 现代化配色
+  --success-bg: rgba(34, 197, 94, 0.1);
+  --success-text: #15803d;
+  --success-border: #22c55e;
+  --success-glow: rgba(34, 197, 94, 0.2);
+
+  --error-bg: rgba(239, 68, 68, 0.1);
+  --error-text: #dc2626;
+  --error-border: #ef4444;
+  --error-glow: rgba(239, 68, 68, 0.2);
+
+  --warning-bg: rgba(245, 158, 11, 0.1);
+  --warning-text: #d97706;
+  --warning-border: #f59e0b;
+  --warning-glow: rgba(245, 158, 11, 0.2);
+
+  --info-bg: rgba(99, 102, 241, 0.1);
+  --info-text: #4f46e5;
+  --info-border: #6366f1;
+  --info-glow: rgba(99, 102, 241, 0.2);
+
+  // 功能性背景
+  --secondary-bg: rgba(248, 250, 252, 0.8);
+  --tag-bg: rgba(226, 232, 240, 0.6);
+  --hint-bg: rgba(248, 250, 252, 0.9);
+  --result-bg: rgba(255, 255, 255, 0.9);
+  --result-header-bg: rgba(248, 250, 252, 0.7);
+  --code-bg: rgba(15, 23, 42, 0.05);
+
+  // 现代化阴影系统
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.3);
+
+  // 玻璃态效果
+  --glass-bg: rgba(255, 255, 255, 0.25);
+  --glass-border: rgba(255, 255, 255, 0.18);
+  --backdrop-blur: blur(16px);
+}
+
+// 现代化深色主题变量
+.dark-theme {
+  // 主色调 - 深色模式优化
+  --primary-color: #818cf8;
+  --primary-hover: #6366f1;
+  --primary-light: #c7d2fe;
+  --primary-dark: #4338ca;
+
+  // 次要色调
+  --secondary-color: #94a3b8;
+  --secondary-hover: #64748b;
+  --accent-color: #22d3ee;
+  --accent-hover: #06b6d4;
+
+  // 背景色 - 深色渐变
+  --background-color: #0f172a;
+  --background-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  --surface-color: rgba(30, 41, 59, 0.8);
+  --surface-elevated: rgba(51, 65, 85, 0.9);
+  --toolbar-bg: rgba(15, 23, 42, 0.9);
+  --sidebar-bg: rgba(30, 41, 59, 0.95);
+  --card-bg: rgba(30, 41, 59, 0.6);
+
+  // 文字颜色
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #64748b;
+  --text-inverse: #0f172a;
+
+  // 边框和分割线
+  --border-color: rgba(51, 65, 85, 0.8);
+  --border-light: rgba(71, 85, 105, 0.6);
+  --divider-color: rgba(51, 65, 85, 0.5);
+
+  // 状态颜色 - 深色模式优化
+  --success-bg: rgba(34, 197, 94, 0.15);
+  --success-text: #4ade80;
+  --success-border: #22c55e;
+  --success-glow: rgba(34, 197, 94, 0.3);
+
+  --error-bg: rgba(239, 68, 68, 0.15);
+  --error-text: #f87171;
+  --error-border: #ef4444;
+  --error-glow: rgba(239, 68, 68, 0.3);
+
+  --warning-bg: rgba(245, 158, 11, 0.15);
+  --warning-text: #fbbf24;
+  --warning-border: #f59e0b;
+  --warning-glow: rgba(245, 158, 11, 0.3);
+
+  --info-bg: rgba(129, 140, 248, 0.15);
+  --info-text: #a5b4fc;
+  --info-border: #818cf8;
+  --info-glow: rgba(129, 140, 248, 0.3);
+
+  // 功能性背景
+  --secondary-bg: rgba(51, 65, 85, 0.8);
+  --tag-bg: rgba(71, 85, 105, 0.6);
+  --hint-bg: rgba(30, 41, 59, 0.9);
+  --result-bg: rgba(30, 41, 59, 0.9);
+  --result-header-bg: rgba(51, 65, 85, 0.7);
+  --code-bg: rgba(0, 0, 0, 0.3);
+
+  // 深色模式阴影系统
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+  --shadow-glow: 0 0 20px rgba(129, 140, 248, 0.4);
+
+  // 玻璃态效果 - 深色版本
+  --glass-bg: rgba(30, 41, 59, 0.3);
+  --glass-border: rgba(51, 65, 85, 0.3);
+  --backdrop-blur: blur(16px);
+}
+
+// 深色主题下的加载指示器背景
+.dark-theme .loading-indicator {
+  background: rgba(15, 23, 42, 0.9) !important;
+}
+
+// 现代化按钮组件样式
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: var(--backdrop-blur);
+
+  // 微妙的内阴影效果
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.2), rgba(255,255,255,0.05));
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+  }
+
+  // 主要按钮 - 渐变背景
+  &.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+    color: var(--text-inverse);
+    box-shadow: var(--shadow-md), 0 0 0 1px rgba(99, 102, 241, 0.1);
+
+    &:hover:not(:disabled) {
+      background: linear-gradient(135deg, var(--primary-hover), var(--primary-dark));
+      box-shadow: var(--shadow-lg), var(--shadow-glow);
+      transform: translateY(-2px);
+    }
+
+    &:active:not(:disabled) {
+      transform: translateY(0);
+      box-shadow: var(--shadow-sm);
+    }
+  }
+
+  // 次要按钮 - 玻璃态效果
+  &.btn-secondary {
+    background: var(--glass-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: var(--backdrop-blur);
+
+    &:hover:not(:disabled) {
+      background: var(--secondary-hover);
+      color: var(--text-inverse);
+      border-color: var(--secondary-hover);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+  }
+
+  // 轮廓按钮
+  &.btn-outline {
+    background: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+
+    &:hover:not(:disabled) {
+      background: var(--primary-color);
+      color: var(--text-inverse);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+    }
+  }
+
+  // 幽灵按钮
+  &.btn-ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    border: none;
+
+    &:hover:not(:disabled) {
+      background: var(--secondary-bg);
+      color: var(--text-primary);
+    }
+  }
+
+  // 成功按钮
+  &.btn-success {
+    background: linear-gradient(135deg, var(--success-border), #16a34a);
+    color: var(--text-inverse);
+    box-shadow: var(--shadow-md), 0 0 0 1px var(--success-glow);
+
+    &:hover:not(:disabled) {
+      box-shadow: var(--shadow-lg), var(--success-glow);
+      transform: translateY(-2px);
+    }
+  }
+
+  // 危险按钮
+  &.btn-danger {
+    background: linear-gradient(135deg, var(--error-border), #dc2626);
+    color: var(--text-inverse);
+    box-shadow: var(--shadow-md), 0 0 0 1px var(--error-glow);
+
+    &:hover:not(:disabled) {
+      box-shadow: var(--shadow-lg), var(--error-glow);
+      transform: translateY(-2px);
+    }
+  }
+
+  // 小尺寸按钮
+  &.btn-sm {
+    padding: 8px 16px;
+    font-size: 12px;
+    border-radius: 8px;
+  }
+
+  // 大尺寸按钮
+  &.btn-lg {
+    padding: 16px 32px;
+    font-size: 16px;
+    border-radius: 16px;
+  }
+
+  // 图标按钮
+  &.btn-icon {
+    padding: 12px;
+    border-radius: 50%;
+
+    &.btn-sm {
+      padding: 8px;
+    }
+
+    &.btn-lg {
+      padding: 16px;
+    }
+  }
+}
+
+// 现代化滚动条样式
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 3px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+// 响应式设计
+@media (max-width: 768px) {
+  .btn {
+    padding: 10px 16px;
+    font-size: 16px;
+  }
+}
+
+// 现代化卡片样式
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: var(--backdrop-blur);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+    border-color: var(--primary-color);
+
+    &::before {
+      opacity: 1;
+    }
+  }
+
+  &.card-elevated {
+    box-shadow: var(--shadow-lg);
+    background: var(--surface-elevated);
+  }
+
+  &.card-glass {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: var(--backdrop-blur);
+  }
+}
+
+// 现代化表单样式
+.form-group {
+  margin-bottom: 24px;
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-primary);
+    font-size: 14px;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    background: var(--surface-color);
+    color: var(--text-primary);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px var(--info-glow);
+    }
+
+    &::placeholder {
+      color: var(--text-muted);
+    }
+
+    &:disabled {
+      background: var(--secondary-bg);
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  .form-error {
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--error-text);
+  }
+
+  .form-help {
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+}
+
+// 代码字体
+.code-font {
+  font-family: 'JetBrains Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+// 现代化代码块样式
+.code-block {
+  background: var(--code-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+    border-radius: 12px 12px 0 0;
+  }
+
+  code {
+    background: none;
+    padding: 0;
+    border: none;
+    color: var(--text-primary);
+    font-family: inherit;
+  }
+
+  .code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-light);
+
+    .code-language {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+
+    .code-actions {
+      display: flex;
+      gap: 8px;
+    }
+  }
+}
+
+// 内联代码样式
+.inline-code {
+  background: var(--code-bg);
+  color: var(--primary-color);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-family: 'JetBrains Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 0.9em;
+  font-weight: 500;
+  border: 1px solid var(--border-light);
+}
+
+// 现代化动画效果
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: 0 0 5px var(--primary-color);
+  }
+  50% {
+    box-shadow: 0 0 20px var(--primary-color), 0 0 30px var(--primary-color);
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translate3d(0,0,0) scale(1);
+  }
+  40%, 43% {
+    transform: translate3d(0, -30px, 0) scale(1.02);
+  }
+  70% {
+    transform: translate3d(0, -15px, 0) scale(1.01);
+  }
+  90% {
+    transform: translate3d(0, -4px, 0) scale(1);
+  }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+
+// 现代化动画类
+.animate-fade-in {
+  animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-slide-in-up {
+  animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-slide-in-down {
+  animation: slideInDown 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.animate-glow {
+  animation: glow 2s ease-in-out infinite;
+}
+
+.animate-bounce {
+  animation: bounce 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-rotate {
+  animation: rotate 1s linear infinite;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  background-size: 200px 100%;
+  animation: shimmer 2s infinite;
+}
+
+// 延迟动画类
+.animate-delay-100 { animation-delay: 0.1s; }
+.animate-delay-200 { animation-delay: 0.2s; }
+.animate-delay-300 { animation-delay: 0.3s; }
+.animate-delay-500 { animation-delay: 0.5s; }
+
+// 现代化悬停效果
+.hover-lift {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: var(--shadow-2xl);
+  }
+}
+
+.hover-scale {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+.hover-glow {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    box-shadow: var(--shadow-glow);
+  }
+}
+
+.hover-rotate {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    transform: rotate(5deg);
+  }
+}
+
+.hover-float {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    transform: translateY(-4px);
+  }
+}
+
+// 交互状态
+.interactive {
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+  }
+}
+
+// 工具类
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.mt-1 { margin-top: 0.25rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 0.75rem; }
+.mt-4 { margin-top: 1rem; }
+
+.mb-1 { margin-bottom: 0.25rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-3 { margin-bottom: 0.75rem; }
+.mb-4 { margin-bottom: 1rem; }
+
+.p-1 { padding: 0.25rem; }
+.p-2 { padding: 0.5rem; }
+.p-3 { padding: 0.75rem; }
+.p-4 { padding: 1rem; }
+
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+
+// 响应式网格
+.grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.grid-cols-1 { grid-template-columns: repeat(1, 1fr); }
+.grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+.grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+@media (max-width: 768px) {
+  .grid-cols-2, .grid-cols-3, .grid-cols-4 {
+    grid-template-columns: 1fr;
+  }
+}

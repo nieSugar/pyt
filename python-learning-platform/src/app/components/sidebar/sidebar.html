@@ -1,0 +1,111 @@
+<div class="sidebar-container" *ngIf="course">
+  <!-- 课程信息头部 -->
+  <div class="course-header">
+    <div class="course-info">
+      <h3 class="course-title">{{ course.title }}</h3>
+      <p class="course-description">{{ course.description }}</p>
+      <div class="course-meta">
+        <span class="difficulty-badge" [class]="'difficulty-' + course.difficulty">
+          {{ course.difficulty === 'beginner' ? '初级' :
+             course.difficulty === 'intermediate' ? '中级' : '高级' }}
+        </span>
+        <span class="time-estimate">
+          <mat-icon>schedule</mat-icon>
+          {{ course.estimatedTime }}
+        </span>
+      </div>
+    </div>
+
+    <!-- 总体进度 -->
+    <div class="overall-progress">
+      <div class="progress-header">
+        <span class="progress-label">总体进度</span>
+        <span class="progress-percentage">{{ getOverallProgress() | number:'1.0-0' }}%</span>
+      </div>
+      <mat-progress-bar
+        mode="determinate"
+        [value]="getOverallProgress()"
+        class="progress-bar">
+      </mat-progress-bar>
+    </div>
+  </div>
+
+  <!-- 课程模块列表 -->
+  <div class="modules-container">
+    <mat-accordion multi="true" class="modules-accordion">
+      <mat-expansion-panel
+        *ngFor="let module of course.modules"
+        [expanded]="true"
+        class="module-panel">
+
+        <!-- 模块标题 -->
+        <mat-expansion-panel-header class="module-header">
+          <mat-panel-title class="module-title">
+            <mat-icon class="module-icon">folder</mat-icon>
+            <span>{{ module.title }}</span>
+            <span class="module-progress-badge"
+                  [matTooltip]="'模块进度: ' + (getModuleProgress(module) | number:'1.0-0') + '%'">
+              {{ getModuleProgress(module) | number:'1.0-0' }}%
+            </span>
+          </mat-panel-title>
+          <mat-panel-description class="module-description">
+            {{ module.description }}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <!-- 课程列表 -->
+        <div class="lessons-container">
+          <mat-progress-bar
+            mode="determinate"
+            [value]="getModuleProgress(module)"
+            class="module-progress-bar">
+          </mat-progress-bar>
+
+          <mat-nav-list class="lessons-list">
+            <mat-list-item
+              *ngFor="let lesson of module.lessons"
+              class="lesson-item"
+              [class.current]="isCurrentLesson(lesson.id)"
+              [class.completed]="isLessonCompleted(lesson.id)"
+              (click)="selectLesson(lesson.id)"
+              [routerLink]="['/lesson', lesson.id]">
+
+              <mat-icon
+                matListItemIcon
+                class="lesson-status-icon"
+                [class.completed]="isLessonCompleted(lesson.id)"
+                [class.current]="isCurrentLesson(lesson.id)">
+                {{ getLessonStatusIcon(lesson.id) }}
+              </mat-icon>
+
+              <div matListItemTitle class="lesson-title">
+                {{ lesson.title }}
+              </div>
+
+              <div matListItemLine class="lesson-meta">
+                <mat-icon class="lesson-type-icon">{{ getLessonIcon(lesson) }}</mat-icon>
+                <span class="lesson-type">
+                  {{ lesson.type === 'tutorial' ? '教程' :
+                     lesson.type === 'exercise' ? '练习' : '测验' }}
+                </span>
+              </div>
+
+              <mat-icon
+                *ngIf="isLessonCompleted(lesson.id)"
+                matListItemIcon
+                class="completion-badge">
+                verified
+              </mat-icon>
+            </mat-list-item>
+          </mat-nav-list>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+</div>
+
+<!-- 加载状态 -->
+<div class="loading-container" *ngIf="!course">
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  <p>加载课程内容中...</p>
+</div>

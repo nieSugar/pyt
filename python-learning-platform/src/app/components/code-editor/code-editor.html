@@ -1,0 +1,66 @@
+<div class="code-editor-container">
+  <!-- 编辑器工具栏 -->
+  <div class="editor-toolbar">
+    <div class="toolbar-left">
+      <span class="editor-title">Python 代码编辑器</span>
+    </div>
+    <div class="toolbar-right">
+      <button
+        class="btn btn-primary"
+        [disabled]="isExecuting || !pythonExecutor.isReady()"
+        (click)="executeCode()">
+        <span *ngIf="isExecuting" class="spinner"></span>
+        <span *ngIf="!isExecuting">▶ 运行代码</span>
+        <span *ngIf="isExecuting">执行中...</span>
+      </button>
+      <button
+        class="btn btn-secondary"
+        (click)="clearOutput()"
+        [disabled]="!executionResult">
+        清除输出
+      </button>
+    </div>
+  </div>
+
+  <!-- Monaco 编辑器容器 -->
+  <div class="editor-wrapper">
+    <div #editorContainer class="monaco-editor-container"></div>
+  </div>
+
+  <!-- Python 解释器状态 -->
+  <div *ngIf="pythonExecutor.isLoading()" class="loading-indicator">
+    <div class="loading-content">
+      <div class="spinner large"></div>
+      <p>正在加载 Python 解释器...</p>
+    </div>
+  </div>
+
+  <!-- 代码执行结果 -->
+  <div *ngIf="executionResult" class="execution-result">
+    <div class="result-header">
+      <span class="result-title">执行结果</span>
+      <span class="execution-time">执行时间: {{executionResult.executionTime}}ms</span>
+    </div>
+
+    <!-- 成功输出 -->
+    <div *ngIf="executionResult.output && !executionResult.error" class="output success">
+      <pre>{{executionResult.output}}</pre>
+    </div>
+
+    <!-- 错误输出 -->
+    <div *ngIf="executionResult.error" class="output error">
+      <div class="error-header">❌ 错误</div>
+      <pre>{{executionResult.error}}</pre>
+    </div>
+
+    <!-- 空输出 -->
+    <div *ngIf="!executionResult.output && !executionResult.error" class="output empty">
+      <p>代码执行完成，无输出内容</p>
+    </div>
+  </div>
+
+  <!-- 快捷键提示 -->
+  <div class="keyboard-shortcuts">
+    <small>💡 提示: 按 Ctrl+Enter (Mac: Cmd+Enter) 快速运行代码</small>
+  </div>
+</div>
