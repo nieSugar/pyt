@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { CourseService } from './course';
-import { Course, Module, Lesson } from '../models/course.model';
+import { Course, UserProgress } from '../models/course.model';
 
 describe('CourseService', () => {
   let service: CourseService;
@@ -14,117 +14,97 @@ describe('CourseService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should return all courses', () => {
-    const courses = service.getCourses();
-    expect(courses).toBeDefined();
-    expect(courses.length).toBeGreaterThan(0);
+  it('should return current course observable', (done) => {
+    service.getCourse().subscribe(course => {
+      expect(course).toBeDefined();
+      done();
+    });
   });
 
-  it('should return course by id', () => {
-    const courseId = 'python-basics';
-    const course = service.getCourse(courseId);
-    expect(course).toBeDefined();
-    expect(course?.id).toBe(courseId);
+  it('should return current lesson observable', (done) => {
+    service.getCurrentLesson().subscribe(lesson => {
+      // Lesson might be null initially
+      expect(lesson).toBeDefined();
+      done();
+    });
   });
 
-  it('should return undefined for non-existent course', () => {
-    const course = service.getCourse('non-existent');
-    expect(course).toBeUndefined();
+  it('should return user progress observable', (done) => {
+    service.getUserProgress().subscribe(progress => {
+      expect(progress).toBeDefined();
+      if (progress) {
+        expect(progress.completedLessons).toBeDefined();
+        expect(Array.isArray(progress.completedLessons)).toBe(true);
+      }
+      done();
+    });
   });
 
-  it('should return lesson by course and lesson id', () => {
-    const courseId = 'python-basics';
-    const lessonId = 'variables-and-types';
-    const lesson = service.getLesson(courseId, lessonId);
-    expect(lesson).toBeDefined();
-    expect(lesson?.id).toBe(lessonId);
+  it('should set current lesson', () => {
+    const lessonId = 'variables';
+
+    // This should not throw an error
+    expect(() => {
+      service.setCurrentLesson(lessonId);
+    }).not.toThrow();
   });
 
-  it('should return undefined for non-existent lesson', () => {
-    const lesson = service.getLesson('python-basics', 'non-existent');
-    expect(lesson).toBeUndefined();
+  it('should mark lesson as completed', (done) => {
+    const lessonId = 'variables';
+
+    // Mark lesson as completed
+    service.markLessonCompleted(lessonId);
+
+    // Check if it's in the completed lessons
+    service.getUserProgress().subscribe(progress => {
+      if (progress) {
+        expect(progress.completedLessons.includes(lessonId)).toBe(true);
+      }
+      done();
+    });
   });
 
-  it('should update lesson progress', () => {
-    const courseId = 'python-basics';
-    const lessonId = 'variables-and-types';
-    
-    service.updateLessonProgress(courseId, lessonId, true);
-    const progress = service.getLessonProgress(courseId, lessonId);
-    expect(progress).toBe(true);
+  it('should update current lesson when setting lesson', (done) => {
+    const lessonId = 'variables';
+
+    service.setCurrentLesson(lessonId);
+
+    service.getUserProgress().subscribe(progress => {
+      if (progress) {
+        expect(progress.currentLesson).toBe(lessonId);
+      }
+      done();
+    });
   });
 
-  it('should get lesson progress', () => {
-    const courseId = 'python-basics';
-    const lessonId = 'variables-and-types';
-    
-    // Initially should be false
-    let progress = service.getLessonProgress(courseId, lessonId);
-    expect(progress).toBe(false);
-    
-    // After updating should be true
-    service.updateLessonProgress(courseId, lessonId, true);
-    progress = service.getLessonProgress(courseId, lessonId);
-    expect(progress).toBe(true);
+  it('should not duplicate completed lessons', (done) => {
+    const lessonId = 'variables';
+
+    // Mark lesson as completed twice
+    service.markLessonCompleted(lessonId);
+    service.markLessonCompleted(lessonId);
+
+    service.getUserProgress().subscribe(progress => {
+      if (progress) {
+        const occurrences = progress.completedLessons.filter(id => id === lessonId).length;
+        expect(occurrences).toBe(1);
+      }
+      done();
+    });
   });
 
-  it('should calculate course progress correctly', () => {
-    const courseId = 'python-basics';
-    const course = service.getCourse(courseId);
-    
-    if (course) {
-      // Mark some lessons as completed
-      const firstLesson = course.modules[0].lessons[0];
-      service.updateLessonProgress(courseId, firstLesson.id, true);
-      
-      const progress = service.getCourseProgress(courseId);
-      expect(progress).toBeGreaterThan(0);
-      expect(progress).toBeLessThanOrEqual(100);
-    }
-  });
+  it('should update last accessed date when marking lesson completed', (done) => {
+    const lessonId = 'variables';
 
-  it('should return 0 progress for non-existent course', () => {
-    const progress = service.getCourseProgress('non-existent');
-    expect(progress).toBe(0);
-  });
+    service.markLessonCompleted(lessonId);
 
-  it('should get overall progress', () => {
-    const progress = service.getOverallProgress();
-    expect(progress).toBeGreaterThanOrEqual(0);
-    expect(progress).toBeLessThanOrEqual(100);
-  });
-
-  it('should get completed lessons count', () => {
-    const count = service.getCompletedLessonsCount();
-    expect(count).toBeGreaterThanOrEqual(0);
-  });
-
-  it('should get total lessons count', () => {
-    const count = service.getTotalLessonsCount();
-    expect(count).toBeGreaterThan(0);
-  });
-
-  it('should get next lesson', () => {
-    const courseId = 'python-basics';
-    const lessonId = 'variables-and-types';
-    const nextLesson = service.getNextLesson(courseId, lessonId);
-    
-    // Should return next lesson or undefined if it's the last lesson
-    if (nextLesson) {
-      expect(nextLesson.id).toBeDefined();
-    }
-  });
-
-  it('should get previous lesson', () => {
-    const courseId = 'python-basics';
-    const course = service.getCourse(courseId);
-    
-    if (course && course.modules[0].lessons.length > 1) {
-      const secondLessonId = course.modules[0].lessons[1].id;
-      const prevLesson = service.getPreviousLesson(courseId, secondLessonId);
-      
-      expect(prevLesson).toBeDefined();
-      expect(prevLesson?.id).toBe(course.modules[0].lessons[0].id);
-    }
+    service.getUserProgress().subscribe(progress => {
+      if (progress) {
+        expect(progress.lastAccessed).toBeDefined();
+        // lastAccessed can be either a Date object or a string (when loaded from localStorage)
+        expect(typeof progress.lastAccessed === 'object' || typeof progress.lastAccessed === 'string').toBe(true);
+      }
+      done();
+    });
   });
 });

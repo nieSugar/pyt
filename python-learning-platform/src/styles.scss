@@ -1,9 +1,9 @@
 /* 现代化Python学习平台样式 */
 
 // 导入第三方库样式
-@import 'animate.css';
-@import 'prismjs/themes/prism-tomorrow.css';
-@import 'ngx-toastr/toastr';
+@use 'animate.css';
+@use 'prismjs/themes/prism-tomorrow.css';
+@use 'ngx-toastr/toastr';
 
 // 导入现代字体
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
