@@ -25,8 +25,8 @@ export class CourseService {
       id: 'python-basics',
       title: 'Python 基础教程',
       description: '从零开始学习 Python 编程语言',
-      totalLessons: 60,
-      estimatedTime: '80 小时',
+      totalLessons: 70,
+      estimatedTime: '90 小时',
       difficulty: 'beginner',
       modules: this.getDefaultModules()
     };
@@ -1370,10 +1370,855 @@ print(f"77°F = {temperature_converter(77, 'F')}°C")`,
         ]
       },
       {
+        id: 'exception-handling',
+        title: '异常处理',
+        description: '错误处理和程序健壮性',
+        order: 5,
+        lessons: [
+          {
+            id: 'try-except',
+            title: '异常处理基础',
+            content: `
+# Python 异常处理
+
+异常处理是编程中的重要概念，它让程序能够优雅地处理错误情况。
+
+## 什么是异常？
+
+异常是程序运行时发生的错误。Python中常见的异常包括：
+- **ValueError**: 值错误（如int("abc")）
+- **TypeError**: 类型错误（如"hello" + 5）
+- **ZeroDivisionError**: 除零错误
+- **FileNotFoundError**: 文件未找到
+- **IndexError**: 索引超出范围
+
+## try-except 语句
+
+\`\`\`python
+try:
+    # 可能出错的代码
+    result = 10 / 0
+except ZeroDivisionError:
+    # 处理特定异常
+    print("不能除以零！")
+\`\`\`
+
+## 捕获多种异常
+
+\`\`\`python
+try:
+    num = int(input("请输入一个数字: "))
+    result = 10 / num
+    print(f"结果: {result}")
+except ValueError:
+    print("输入的不是有效数字！")
+except ZeroDivisionError:
+    print("不能除以零！")
+except Exception as e:
+    print(f"发生了未知错误: {e}")
+\`\`\`
+
+## else 和 finally 子句
+
+\`\`\`python
+try:
+    file = open("data.txt", "r")
+    content = file.read()
+except FileNotFoundError:
+    print("文件不存在")
+else:
+    # 没有异常时执行
+    print("文件读取成功")
+finally:
+    # 无论是否有异常都执行
+    if 'file' in locals():
+        file.close()
+    print("清理完成")
+\`\`\`
+            `,
+            type: 'tutorial',
+            codeExample: `# 异常处理实例演示
+print("=== 异常处理演示 ===")
+
+# 1. 基本异常处理
+def safe_divide(a, b):
+    """安全除法函数"""
+    try:
+        result = a / b
+        return result
+    except ZeroDivisionError:
+        print(f"错误：不能用{b}作除数")
+        return None
+    except TypeError:
+        print("错误：参数必须是数字")
+        return None
+
+# 测试除法函数
+print("\\n1. 安全除法测试:")
+print(f"10 ÷ 2 = {safe_divide(10, 2)}")
+print(f"10 ÷ 0 = {safe_divide(10, 0)}")
+print(f"'10' ÷ 2 = {safe_divide('10', 2)}")
+
+# 2. 用户输入验证
+def get_valid_number():
+    """获取有效的数字输入"""
+    while True:
+        try:
+            user_input = input("请输入一个数字: ")
+            number = float(user_input)
+            return number
+        except ValueError:
+            print("输入无效，请输入一个数字！")
+        except KeyboardInterrupt:
+            print("\\n程序被用户中断")
+            return None
+
+# 模拟用户输入（在实际环境中会等待用户输入）
+print("\\n2. 输入验证演示:")
+test_inputs = ["123", "abc", "45.6", ""]
+for test_input in test_inputs:
+    try:
+        number = float(test_input)
+        print(f"输入 '{test_input}' -> 有效数字: {number}")
+    except ValueError:
+        print(f"输入 '{test_input}' -> 无效输入")
+
+# 3. 文件操作异常处理
+def read_file_safely(filename):
+    """安全读取文件"""
+    try:
+        with open(filename, 'r', encoding='utf-8') as file:
+            content = file.read()
+            return content
+    except FileNotFoundError:
+        print(f"错误：文件 '{filename}' 不存在")
+        return None
+    except PermissionError:
+        print(f"错误：没有权限读取文件 '{filename}'")
+        return None
+    except Exception as e:
+        print(f"读取文件时发生未知错误: {e}")
+        return None
+
+print("\\n3. 文件读取演示:")
+# 尝试读取不存在的文件
+content = read_file_safely("nonexistent.txt")
+if content:
+    print("文件内容:", content)
+else:
+    print("文件读取失败")
+
+# 4. 列表操作异常处理
+def safe_list_access(lst, index):
+    """安全访问列表元素"""
+    try:
+        return lst[index]
+    except IndexError:
+        print(f"错误：索引 {index} 超出列表范围 (0-{len(lst)-1})")
+        return None
+    except TypeError:
+        print("错误：索引必须是整数")
+        return None
+
+print("\\n4. 列表访问演示:")
+my_list = [1, 2, 3, 4, 5]
+print(f"列表: {my_list}")
+print(f"索引 2: {safe_list_access(my_list, 2)}")
+print(f"索引 10: {safe_list_access(my_list, 10)}")
+print(f"索引 '2': {safe_list_access(my_list, '2')}")`,
+            exercise: {
+              id: 'exception-exercise-1',
+              description: "创建一个安全的数据处理函数，能够处理各种可能的异常",
+              initialCode: `# 创建一个数据处理函数
+def process_data(data_list):
+    """
+    处理数据列表，计算平均值
+    需要处理以下异常：
+    1. 空列表
+    2. 非数字数据
+    3. None值
+    """
+    try:
+        # TODO: 实现数据处理逻辑
+        # 1. 检查列表是否为空
+        # 2. 过滤掉非数字数据
+        # 3. 计算平均值
+        pass
+    except Exception as e:
+        # TODO: 添加适当的异常处理
+        pass
+
+# 测试数据
+test_cases = [
+    [1, 2, 3, 4, 5],           # 正常数据
+    [],                         # 空列表
+    [1, 'abc', 3, None, 5],    # 混合数据
+    ['a', 'b', 'c'],           # 全是非数字
+    None                        # None值
+]
+
+print("=== 数据处理测试 ===")
+for i, data in enumerate(test_cases, 1):
+    print(f"\\n测试 {i}: {data}")
+    result = process_data(data)
+    print(f"结果: {result}")`,
+              expectedOutput: `=== 数据处理测试 ===
+
+测试 1: [1, 2, 3, 4, 5]
+有效数据: [1, 2, 3, 4, 5]
+结果: 3.0
+
+测试 2: []
+错误: 列表为空，无法计算平均值
+结果: None
+
+测试 3: [1, 'abc', 3, None, 5]
+有效数据: [1, 3, 5]
+结果: 3.0
+
+测试 4: ['a', 'b', 'c']
+错误: 没有有效的数字数据
+结果: None
+
+测试 5: None
+错误: 输入数据不是列表
+结果: None`,
+              hints: [
+                "使用 isinstance(item, (int, float)) 检查是否为数字",
+                "用 try-except 包装整个函数逻辑",
+                "检查列表长度避免除零错误",
+                "使用 sum() 和 len() 计算平均值"
+              ]
+            },
+            order: 1,
+            completed: false
+          },
+          {
+            id: 'custom-exceptions',
+            title: '自定义异常',
+            content: `
+# 自定义异常
+
+Python允许我们创建自定义异常类，使错误处理更加精确和有意义。
+
+## 创建自定义异常
+
+\`\`\`python
+class CustomError(Exception):
+    """自定义异常基类"""
+    pass
+
+class ValidationError(CustomError):
+    """数据验证异常"""
+    def __init__(self, message, field=None):
+        super().__init__(message)
+        self.field = field
+
+class BusinessLogicError(CustomError):
+    """业务逻辑异常"""
+    pass
+\`\`\`
+
+## 抛出自定义异常
+
+\`\`\`python
+def validate_age(age):
+    if not isinstance(age, int):
+        raise ValidationError("年龄必须是整数", "age")
+    if age < 0:
+        raise ValidationError("年龄不能为负数", "age")
+    if age > 150:
+        raise ValidationError("年龄不能超过150岁", "age")
+    return True
+\`\`\`
+
+## 异常链和上下文
+
+\`\`\`python
+try:
+    # 原始异常
+    result = 1 / 0
+except ZeroDivisionError as e:
+    # 抛出新异常，保留原异常信息
+    raise BusinessLogicError("计算失败") from e
+\`\`\`
+            `,
+            type: 'tutorial',
+            codeExample: `# 自定义异常示例
+print("=== 自定义异常演示 ===")
+
+# 1. 定义自定义异常类
+class BankError(Exception):
+    """银行操作异常基类"""
+    pass
+
+class InsufficientFundsError(BankError):
+    """余额不足异常"""
+    def __init__(self, balance, amount):
+        self.balance = balance
+        self.amount = amount
+        super().__init__(f"余额不足：当前余额 {balance}，尝试提取 {amount}")
+
+class InvalidAmountError(BankError):
+    """无效金额异常"""
+    def __init__(self, amount):
+        self.amount = amount
+        super().__init__(f"无效金额：{amount}，金额必须大于0")
+
+class AccountNotFoundError(BankError):
+    """账户不存在异常"""
+    def __init__(self, account_id):
+        self.account_id = account_id
+        super().__init__(f"账户不存在：{account_id}")
+
+# 2. 银行账户类
+class BankAccount:
+    """银行账户类"""
+
+    def __init__(self, account_id, initial_balance=0):
+        self.account_id = account_id
+        self.balance = initial_balance
+        self.transaction_history = []
+
+    def deposit(self, amount):
+        """存款"""
+        if amount <= 0:
+            raise InvalidAmountError(amount)
+
+        self.balance += amount
+        self.transaction_history.append(f"存款: +{amount}")
+        print(f"存款成功：{amount}，当前余额：{self.balance}")
+
+    def withdraw(self, amount):
+        """取款"""
+        if amount <= 0:
+            raise InvalidAmountError(amount)
+
+        if amount > self.balance:
+            raise InsufficientFundsError(self.balance, amount)
+
+        self.balance -= amount
+        self.transaction_history.append(f"取款: -{amount}")
+        print(f"取款成功：{amount}，当前余额：{self.balance}")
+
+# 3. 演示银行系统
+print("\\n=== 银行系统演示 ===")
+
+try:
+    # 创建账户
+    account = BankAccount("ACC001", 1000)
+
+    # 正常操作
+    print("\\n=== 正常操作 ===")
+    account.deposit(200)
+    account.withdraw(150)
+
+    # 异常操作演示
+    print("\\n=== 异常操作演示 ===")
+
+    # 1. 无效金额
+    try:
+        account.deposit(-100)
+    except InvalidAmountError as e:
+        print(f"捕获异常：{e}")
+
+    # 2. 余额不足
+    try:
+        account.withdraw(2000)
+    except InsufficientFundsError as e:
+        print(f"捕获异常：{e}")
+        print(f"  当前余额：{e.balance}")
+        print(f"  尝试金额：{e.amount}")
+
+except Exception as e:
+    print(f"系统错误：{e}")`,
+            exercise: {
+              id: 'custom-exception-exercise',
+              description: "创建一个学生管理系统，使用自定义异常处理各种错误情况",
+              initialCode: `# 学生管理系统 - 自定义异常练习
+
+# TODO: 定义自定义异常类
+class StudentError(Exception):
+    """学生管理异常基类"""
+    pass
+
+class StudentNotFoundError(StudentError):
+    """学生不存在异常"""
+    # TODO: 实现构造函数
+    pass
+
+class InvalidGradeError(StudentError):
+    """无效成绩异常"""
+    # TODO: 实现构造函数，包含成绩值和有效范围
+    pass
+
+class DuplicateStudentError(StudentError):
+    """重复学生异常"""
+    # TODO: 实现构造函数
+    pass
+
+# TODO: 实现学生类
+class Student:
+    def __init__(self, student_id, name):
+        # TODO: 初始化学生信息
+        pass
+
+    def add_grade(self, subject, grade):
+        """添加成绩"""
+        # TODO: 验证成绩范围(0-100)，如果无效抛出InvalidGradeError
+        pass
+
+    def get_average(self):
+        """计算平均分"""
+        # TODO: 计算并返回平均分
+        pass
+
+# TODO: 实现学生管理系统类
+class StudentManager:
+    def __init__(self):
+        # TODO: 初始化学生字典
+        pass
+
+    def add_student(self, student_id, name):
+        """添加学生"""
+        # TODO: 检查学生是否已存在，如果存在抛出DuplicateStudentError
+        pass
+
+    def get_student(self, student_id):
+        """获取学生"""
+        # TODO: 如果学生不存在，抛出StudentNotFoundError
+        pass
+
+    def add_grade(self, student_id, subject, grade):
+        """为学生添加成绩"""
+        # TODO: 获取学生并添加成绩
+        pass
+
+# 测试代码
+if __name__ == "__main__":
+    manager = StudentManager()
+
+    try:
+        # 添加学生
+        manager.add_student("S001", "张三")
+        manager.add_student("S002", "李四")
+
+        # 添加成绩
+        manager.add_grade("S001", "数学", 95)
+        manager.add_grade("S001", "英语", 87)
+
+        # 获取学生信息
+        student = manager.get_student("S001")
+        print(f"学生: {student.name}, 平均分: {student.get_average()}")
+
+        # 测试异常情况
+        manager.add_student("S001", "王五")  # 重复学生
+
+    except StudentError as e:
+        print(f"学生管理错误: {e}")`,
+              expectedOutput: `学生: 张三, 平均分: 91.0
+学生管理错误: 学生 S001 已存在`,
+              hints: [
+                "自定义异常类继承自Exception或其子类",
+                "在__init__方法中调用super().__init__(message)",
+                "使用isinstance检查数据类型",
+                "在字典操作前检查键是否存在"
+              ]
+            },
+            order: 2,
+            completed: false
+          }
+        ]
+      },
+      {
+        id: 'file-operations',
+        title: '文件操作',
+        description: '文件读写和数据持久化',
+        order: 6,
+        lessons: [
+          {
+            id: 'file-basics',
+            title: '文件操作基础',
+            content: `
+# Python 文件操作
+
+文件操作是程序与外部数据交互的重要方式，Python提供了强大的文件处理功能。
+
+## 打开文件
+
+\`\`\`python
+# 基本语法
+file = open("filename.txt", "mode", encoding="utf-8")
+
+# 常用模式
+# 'r' - 读取模式（默认）
+# 'w' - 写入模式（覆盖）
+# 'a' - 追加模式
+# 'x' - 创建模式（文件不存在时）
+# 'b' - 二进制模式
+# 't' - 文本模式（默认）
+\`\`\`
+
+## 读取文件
+
+\`\`\`python
+# 方法1：读取整个文件
+with open("data.txt", "r", encoding="utf-8") as file:
+    content = file.read()
+    print(content)
+
+# 方法2：逐行读取
+with open("data.txt", "r", encoding="utf-8") as file:
+    for line in file:
+        print(line.strip())
+
+# 方法3：读取所有行到列表
+with open("data.txt", "r", encoding="utf-8") as file:
+    lines = file.readlines()
+\`\`\`
+
+## 写入文件
+
+\`\`\`python
+# 写入文本
+with open("output.txt", "w", encoding="utf-8") as file:
+    file.write("Hello, World!\\n")
+    file.write("Python文件操作")
+
+# 写入多行
+lines = ["第一行\\n", "第二行\\n", "第三行\\n"]
+with open("output.txt", "w", encoding="utf-8") as file:
+    file.writelines(lines)
+\`\`\`
+
+## with语句的优势
+
+使用 \`with\` 语句可以自动处理文件的打开和关闭，即使发生异常也能确保文件被正确关闭。
+
+\`\`\`python
+# 推荐方式
+with open("file.txt", "r") as file:
+    content = file.read()
+# 文件自动关闭
+
+# 不推荐方式
+file = open("file.txt", "r")
+content = file.read()
+file.close()  # 容易忘记或异常时不执行
+\`\`\`
+            `,
+            type: 'tutorial',
+            codeExample: `# 文件操作实例演示
+print("=== 文件操作演示 ===")
+
+import os
+import tempfile
+
+# 1. 创建临时文件进行演示
+def create_sample_file():
+    """创建示例文件"""
+    sample_data = """Python编程语言
+面向对象编程
+文件操作
+异常处理
+数据结构
+算法设计"""
+
+    with open("sample.txt", "w", encoding="utf-8") as file:
+        file.write(sample_data)
+    print("示例文件 'sample.txt' 创建成功")
+
+# 2. 读取文件的不同方法
+def demonstrate_reading():
+    """演示文件读取"""
+    print("\\n=== 文件读取演示 ===")
+
+    # 方法1：读取整个文件
+    print("1. 读取整个文件:")
+    try:
+        with open("sample.txt", "r", encoding="utf-8") as file:
+            content = file.read()
+            print(f"文件内容:\\n{content}")
+    except FileNotFoundError:
+        print("文件不存在")
+
+    # 方法2：逐行读取
+    print("\\n2. 逐行读取:")
+    try:
+        with open("sample.txt", "r", encoding="utf-8") as file:
+            line_number = 1
+            for line in file:
+                print(f"第{line_number}行: {line.strip()}")
+                line_number += 1
+    except FileNotFoundError:
+        print("文件不存在")
+
+    # 方法3：读取所有行到列表
+    print("\\n3. 读取到列表:")
+    try:
+        with open("sample.txt", "r", encoding="utf-8") as file:
+            lines = file.readlines()
+            print(f"共读取 {len(lines)} 行")
+            for i, line in enumerate(lines, 1):
+                print(f"  行{i}: {line.strip()}")
+    except FileNotFoundError:
+        print("文件不存在")
+
+# 3. 写入文件演示
+def demonstrate_writing():
+    """演示文件写入"""
+    print("\\n=== 文件写入演示 ===")
+
+    # 写入新文件
+    print("1. 创建新文件:")
+    with open("output.txt", "w", encoding="utf-8") as file:
+        file.write("这是第一行\\n")
+        file.write("这是第二行\\n")
+        file.write("Python文件操作练习\\n")
+    print("文件 'output.txt' 写入完成")
+
+    # 追加内容
+    print("\\n2. 追加内容:")
+    with open("output.txt", "a", encoding="utf-8") as file:
+        file.write("这是追加的内容\\n")
+        file.write("文件操作很简单\\n")
+    print("内容追加完成")
+
+    # 读取并显示写入的内容
+    print("\\n3. 读取写入的文件:")
+    with open("output.txt", "r", encoding="utf-8") as file:
+        content = file.read()
+        print(f"文件内容:\\n{content}")
+
+# 4. 文件信息获取
+def demonstrate_file_info():
+    """演示文件信息获取"""
+    print("\\n=== 文件信息演示 ===")
+
+    filename = "sample.txt"
+
+    # 检查文件是否存在
+    if os.path.exists(filename):
+        print(f"文件 '{filename}' 存在")
+
+        # 获取文件大小
+        size = os.path.getsize(filename)
+        print(f"文件大小: {size} 字节")
+
+        # 获取文件修改时间
+        import time
+        mtime = os.path.getmtime(filename)
+        formatted_time = time.ctime(mtime)
+        print(f"最后修改时间: {formatted_time}")
+
+        # 检查是否为文件
+        print(f"是否为文件: {os.path.isfile(filename)}")
+        print(f"是否为目录: {os.path.isdir(filename)}")
+    else:
+        print(f"文件 '{filename}' 不存在")
+
+# 5. 文件操作异常处理
+def demonstrate_error_handling():
+    """演示文件操作异常处理"""
+    print("\\n=== 异常处理演示 ===")
+
+    # 尝试读取不存在的文件
+    try:
+        with open("nonexistent.txt", "r") as file:
+            content = file.read()
+    except FileNotFoundError:
+        print("错误: 文件不存在")
+    except PermissionError:
+        print("错误: 没有权限访问文件")
+    except Exception as e:
+        print(f"其他错误: {e}")
+
+    # 尝试写入只读文件（模拟）
+    try:
+        # 创建一个文件然后尝试以不兼容的模式操作
+        with open("test.txt", "w") as file:
+            file.write("测试内容")
+
+        # 尝试以读模式写入（会出错）
+        with open("test.txt", "r") as file:
+            file.write("这会出错")  # 读模式不能写入
+    except io.UnsupportedOperation:
+        print("错误: 文件模式不支持写入操作")
+    except Exception as e:
+        print(f"写入错误: {e}")
+
+# 6. 文件处理实用函数
+def count_words_in_file(filename):
+    """统计文件中的单词数"""
+    try:
+        with open(filename, "r", encoding="utf-8") as file:
+            content = file.read()
+            words = content.split()
+            return len(words)
+    except FileNotFoundError:
+        print(f"文件 '{filename}' 不存在")
+        return 0
+    except Exception as e:
+        print(f"读取文件时出错: {e}")
+        return 0
+
+def copy_file(source, destination):
+    """复制文件"""
+    try:
+        with open(source, "r", encoding="utf-8") as src:
+            content = src.read()
+
+        with open(destination, "w", encoding="utf-8") as dst:
+            dst.write(content)
+
+        print(f"文件从 '{source}' 复制到 '{destination}' 成功")
+        return True
+    except Exception as e:
+        print(f"复制文件时出错: {e}")
+        return False
+
+# 执行演示
+create_sample_file()
+demonstrate_reading()
+demonstrate_writing()
+demonstrate_file_info()
+demonstrate_error_handling()
+
+# 使用实用函数
+print("\\n=== 实用函数演示 ===")
+word_count = count_words_in_file("sample.txt")
+print(f"'sample.txt' 包含 {word_count} 个单词")
+
+copy_file("sample.txt", "sample_copy.txt")
+
+# 清理临时文件
+print("\\n=== 清理临时文件 ===")
+files_to_remove = ["sample.txt", "output.txt", "test.txt", "sample_copy.txt"]
+for filename in files_to_remove:
+    try:
+        if os.path.exists(filename):
+            os.remove(filename)
+            print(f"删除文件: {filename}")
+    except Exception as e:
+        print(f"删除文件 {filename} 时出错: {e}")`,
+            exercise: {
+              id: 'file-exercise-1',
+              description: "创建一个学生成绩管理系统，能够将学生信息保存到文件并从文件读取",
+              initialCode: `# 学生成绩文件管理系统
+import os
+
+class StudentGradeManager:
+    def __init__(self, filename="students.txt"):
+        self.filename = filename
+        self.students = {}
+        self.load_from_file()
+
+    def add_student(self, student_id, name, grades=None):
+        """添加学生"""
+        if grades is None:
+            grades = {}
+        # TODO: 实现添加学生逻辑
+        pass
+
+    def add_grade(self, student_id, subject, grade):
+        """为学生添加成绩"""
+        # TODO: 实现添加成绩逻辑
+        pass
+
+    def get_student_info(self, student_id):
+        """获取学生信息"""
+        # TODO: 实现获取学生信息逻辑
+        pass
+
+    def save_to_file(self):
+        """保存数据到文件"""
+        try:
+            # TODO: 将学生数据保存到文件
+            # 格式: student_id,name,subject1:grade1,subject2:grade2,...
+            pass
+        except Exception as e:
+            print(f"保存文件时出错: {e}")
+
+    def load_from_file(self):
+        """从文件加载数据"""
+        try:
+            # TODO: 从文件读取学生数据
+            # 解析格式: student_id,name,subject1:grade1,subject2:grade2,...
+            pass
+        except FileNotFoundError:
+            print(f"文件 {self.filename} 不存在，创建新的数据库")
+        except Exception as e:
+            print(f"读取文件时出错: {e}")
+
+    def display_all_students(self):
+        """显示所有学生信息"""
+        # TODO: 显示所有学生的信息和成绩
+        pass
+
+    def calculate_average(self, student_id):
+        """计算学生平均分"""
+        # TODO: 计算指定学生的平均分
+        pass
+
+# 测试代码
+if __name__ == "__main__":
+    # 创建管理器
+    manager = StudentGradeManager("test_students.txt")
+
+    # 添加学生
+    manager.add_student("S001", "张三")
+    manager.add_student("S002", "李四")
+
+    # 添加成绩
+    manager.add_grade("S001", "数学", 95)
+    manager.add_grade("S001", "英语", 87)
+    manager.add_grade("S002", "数学", 92)
+    manager.add_grade("S002", "英语", 89)
+
+    # 保存到文件
+    manager.save_to_file()
+
+    # 显示所有学生
+    manager.display_all_students()
+
+    # 计算平均分
+    avg1 = manager.calculate_average("S001")
+    avg2 = manager.calculate_average("S002")
+    print(f"张三平均分: {avg1}")
+    print(f"李四平均分: {avg2}")`,
+              expectedOutput: `文件 test_students.txt 不存在，创建新的数据库
+数据已保存到文件: test_students.txt
+
+=== 所有学生信息 ===
+学生ID: S001, 姓名: 张三
+  数学: 95
+  英语: 87
+  平均分: 91.0
+
+学生ID: S002, 姓名: 李四
+  数学: 92
+  英语: 89
+  平均分: 90.5
+
+张三平均分: 91.0
+李四平均分: 90.5`,
+              hints: [
+                "使用逗号分隔学生基本信息，冒号分隔科目和成绩",
+                "用 split() 方法解析文件内容",
+                "记得处理文件不存在的情况",
+                "保存时每个学生占一行"
+              ]
+            },
+            order: 1,
+            completed: false
+          }
+        ]
+      },
+      {
         id: 'object-oriented',
         title: '面向对象编程',
         description: '类、对象、继承和多态',
-        order: 5,
+        order: 7,
         lessons: [
           {
             id: 'classes-objects',
@@ -3575,6 +4420,731 @@ print(f"分类分布: {distribution}")`,
               ]
             },
             order: 5,
+            completed: false
+          }
+        ]
+      },
+      {
+        id: 'practical-projects',
+        title: '实战项目',
+        description: '综合应用Python知识的实际项目',
+        order: 8,
+        lessons: [
+          {
+            id: 'calculator-project',
+            title: '计算器程序',
+            content: `
+# 计算器程序项目
+
+这是一个综合性项目，将运用我们学过的所有Python知识来创建一个功能完整的计算器程序。
+
+## 项目目标
+
+创建一个支持以下功能的计算器：
+1. 基本算术运算（+、-、*、/）
+2. 高级运算（幂运算、开方、三角函数）
+3. 内存功能（存储、读取、清除）
+4. 历史记录
+5. 错误处理
+6. 用户友好的界面
+
+## 项目结构
+
+\`\`\`
+calculator/
+├── main.py          # 主程序
+├── calculator.py    # 计算器核心类
+├── memory.py        # 内存管理
+├── history.py       # 历史记录
+└── utils.py         # 工具函数
+\`\`\`
+
+## 核心功能设计
+
+### 1. 基本计算器类
+\`\`\`python
+class Calculator:
+    def __init__(self):
+        self.current_value = 0
+        self.memory = Memory()
+        self.history = History()
+
+    def add(self, value):
+        result = self.current_value + value
+        self.history.add_operation(f"{self.current_value} + {value} = {result}")
+        self.current_value = result
+        return result
+
+    def subtract(self, value):
+        result = self.current_value - value
+        self.history.add_operation(f"{self.current_value} - {value} = {result}")
+        self.current_value = result
+        return result
+\`\`\`
+
+### 2. 内存管理
+\`\`\`python
+class Memory:
+    def __init__(self):
+        self.stored_value = 0
+
+    def store(self, value):
+        self.stored_value = value
+
+    def recall(self):
+        return self.stored_value
+
+    def clear(self):
+        self.stored_value = 0
+\`\`\`
+
+### 3. 历史记录
+\`\`\`python
+class History:
+    def __init__(self):
+        self.operations = []
+
+    def add_operation(self, operation):
+        self.operations.append(operation)
+
+    def get_history(self):
+        return self.operations
+
+    def clear_history(self):
+        self.operations.clear()
+\`\`\`
+
+## 用户界面设计
+
+创建一个简单的文本界面，支持以下命令：
+- 数字输入
+- 运算符（+、-、*、/、**）
+- 特殊命令（=、C、MC、MR、MS、H）
+- 退出命令（quit、exit）
+
+## 错误处理
+
+处理常见错误：
+- 除零错误
+- 无效输入
+- 内存溢出
+- 数学域错误
+
+## 扩展功能
+
+1. **科学计算功能**
+   - 三角函数（sin、cos、tan）
+   - 对数函数（log、ln）
+   - 常数（π、e）
+
+2. **单位转换**
+   - 温度转换
+   - 长度转换
+   - 重量转换
+
+3. **表达式解析**
+   - 支持复杂表达式输入
+   - 括号优先级处理
+            `,
+            type: 'tutorial',
+            codeExample: `# 完整的计算器程序实现
+print("=== 高级计算器程序 ===")
+
+import math
+import re
+from datetime import datetime
+
+class Memory:
+    """内存管理类"""
+    def __init__(self):
+        self.stored_value = 0
+        self.memory_history = []
+
+    def store(self, value):
+        """存储值到内存"""
+        self.stored_value = value
+        self.memory_history.append(f"存储: {value}")
+        print(f"已存储到内存: {value}")
+
+    def recall(self):
+        """从内存读取值"""
+        print(f"从内存读取: {self.stored_value}")
+        return self.stored_value
+
+    def clear(self):
+        """清除内存"""
+        old_value = self.stored_value
+        self.stored_value = 0
+        self.memory_history.append(f"清除内存 (原值: {old_value})")
+        print("内存已清除")
+
+    def add_to_memory(self, value):
+        """将值加到内存中"""
+        self.stored_value += value
+        self.memory_history.append(f"内存加法: +{value} = {self.stored_value}")
+        print(f"内存值更新为: {self.stored_value}")
+
+class History:
+    """历史记录类"""
+    def __init__(self):
+        self.operations = []
+        self.max_history = 50  # 最多保存50条记录
+
+    def add_operation(self, operation):
+        """添加操作记录"""
+        timestamp = datetime.now().strftime("%H:%M:%S")
+        record = f"[{timestamp}] {operation}"
+        self.operations.append(record)
+
+        # 保持历史记录在限制范围内
+        if len(self.operations) > self.max_history:
+            self.operations.pop(0)
+
+    def get_history(self, count=10):
+        """获取最近的历史记录"""
+        return self.operations[-count:] if self.operations else []
+
+    def clear_history(self):
+        """清除历史记录"""
+        self.operations.clear()
+        print("历史记录已清除")
+
+    def save_to_file(self, filename="calculator_history.txt"):
+        """保存历史记录到文件"""
+        try:
+            with open(filename, "w", encoding="utf-8") as file:
+                for operation in self.operations:
+                    file.write(operation + "\\n")
+            print(f"历史记录已保存到 {filename}")
+        except Exception as e:
+            print(f"保存历史记录失败: {e}")
+
+class AdvancedCalculator:
+    """高级计算器类"""
+
+    def __init__(self):
+        self.current_value = 0
+        self.memory = Memory()
+        self.history = History()
+        self.last_operation = None
+        self.constants = {
+            'pi': math.pi,
+            'e': math.e,
+            'phi': (1 + math.sqrt(5)) / 2  # 黄金比例
+        }
+
+    def clear(self):
+        """清除当前值"""
+        old_value = self.current_value
+        self.current_value = 0
+        self.history.add_operation(f"清除: {old_value} → 0")
+        print("计算器已清除")
+
+    def set_value(self, value):
+        """设置当前值"""
+        self.current_value = value
+        self.history.add_operation(f"设置值: {value}")
+
+    # 基本运算
+    def add(self, value):
+        """加法"""
+        old_value = self.current_value
+        self.current_value += value
+        operation = f"{old_value} + {value} = {self.current_value}"
+        self.history.add_operation(operation)
+        self.last_operation = ('add', value)
+        return self.current_value
+
+    def subtract(self, value):
+        """减法"""
+        old_value = self.current_value
+        self.current_value -= value
+        operation = f"{old_value} - {value} = {self.current_value}"
+        self.history.add_operation(operation)
+        self.last_operation = ('subtract', value)
+        return self.current_value
+
+    def multiply(self, value):
+        """乘法"""
+        old_value = self.current_value
+        self.current_value *= value
+        operation = f"{old_value} × {value} = {self.current_value}"
+        self.history.add_operation(operation)
+        self.last_operation = ('multiply', value)
+        return self.current_value
+
+    def divide(self, value):
+        """除法"""
+        if value == 0:
+            raise ZeroDivisionError("不能除以零")
+
+        old_value = self.current_value
+        self.current_value /= value
+        operation = f"{old_value} ÷ {value} = {self.current_value}"
+        self.history.add_operation(operation)
+        self.last_operation = ('divide', value)
+        return self.current_value
+
+    def power(self, exponent):
+        """幂运算"""
+        old_value = self.current_value
+        self.current_value = old_value ** exponent
+        operation = f"{old_value} ^ {exponent} = {self.current_value}"
+        self.history.add_operation(operation)
+        self.last_operation = ('power', exponent)
+        return self.current_value
+
+    def square_root(self):
+        """平方根"""
+        if self.current_value < 0:
+            raise ValueError("负数不能开平方根")
+
+        old_value = self.current_value
+        self.current_value = math.sqrt(old_value)
+        operation = f"√{old_value} = {self.current_value}"
+        self.history.add_operation(operation)
+        self.last_operation = ('sqrt', None)
+        return self.current_value
+
+    # 三角函数
+    def sin(self, angle_in_degrees=True):
+        """正弦函数"""
+        angle = self.current_value
+        if angle_in_degrees:
+            angle = math.radians(angle)
+
+        old_value = self.current_value
+        self.current_value = math.sin(angle)
+        unit = "°" if angle_in_degrees else "弧度"
+        operation = f"sin({old_value}{unit}) = {self.current_value}"
+        self.history.add_operation(operation)
+        return self.current_value
+
+    def cos(self, angle_in_degrees=True):
+        """余弦函数"""
+        angle = self.current_value
+        if angle_in_degrees:
+            angle = math.radians(angle)
+
+        old_value = self.current_value
+        self.current_value = math.cos(angle)
+        unit = "°" if angle_in_degrees else "弧度"
+        operation = f"cos({old_value}{unit}) = {self.current_value}"
+        self.history.add_operation(operation)
+        return self.current_value
+
+    def tan(self, angle_in_degrees=True):
+        """正切函数"""
+        angle = self.current_value
+        if angle_in_degrees:
+            angle = math.radians(angle)
+
+        old_value = self.current_value
+        self.current_value = math.tan(angle)
+        unit = "°" if angle_in_degrees else "弧度"
+        operation = f"tan({old_value}{unit}) = {self.current_value}"
+        self.history.add_operation(operation)
+        return self.current_value
+
+    # 对数函数
+    def log(self, base=10):
+        """对数函数"""
+        if self.current_value <= 0:
+            raise ValueError("对数的真数必须大于0")
+
+        old_value = self.current_value
+        if base == 10:
+            self.current_value = math.log10(old_value)
+            operation = f"log({old_value}) = {self.current_value}"
+        elif base == math.e:
+            self.current_value = math.log(old_value)
+            operation = f"ln({old_value}) = {self.current_value}"
+        else:
+            self.current_value = math.log(old_value, base)
+            operation = f"log_{base}({old_value}) = {self.current_value}"
+
+        self.history.add_operation(operation)
+        return self.current_value
+
+    def factorial(self):
+        """阶乘"""
+        if self.current_value < 0 or self.current_value != int(self.current_value):
+            raise ValueError("阶乘只能计算非负整数")
+
+        old_value = int(self.current_value)
+        self.current_value = math.factorial(old_value)
+        operation = f"{old_value}! = {self.current_value}"
+        self.history.add_operation(operation)
+        return self.current_value
+
+    def percentage(self, of_value):
+        """百分比计算"""
+        old_value = self.current_value
+        self.current_value = (old_value / 100) * of_value
+        operation = f"{old_value}% of {of_value} = {self.current_value}"
+        self.history.add_operation(operation)
+        return self.current_value
+
+    def repeat_last_operation(self):
+        """重复上次操作"""
+        if not self.last_operation:
+            print("没有可重复的操作")
+            return self.current_value
+
+        operation, value = self.last_operation
+        if operation == 'add':
+            return self.add(value)
+        elif operation == 'subtract':
+            return self.subtract(value)
+        elif operation == 'multiply':
+            return self.multiply(value)
+        elif operation == 'divide':
+            return self.divide(value)
+        elif operation == 'power':
+            return self.power(value)
+        elif operation == 'sqrt':
+            return self.square_root()
+
+    def get_constant(self, name):
+        """获取数学常数"""
+        if name.lower() in self.constants:
+            value = self.constants[name.lower()]
+            self.current_value = value
+            self.history.add_operation(f"常数: {name} = {value}")
+            return value
+        else:
+            available = ", ".join(self.constants.keys())
+            raise ValueError(f"未知常数: {name}。可用常数: {available}")
+
+# 计算器用户界面
+class CalculatorInterface:
+    """计算器用户界面"""
+
+    def __init__(self):
+        self.calc = AdvancedCalculator()
+        self.running = True
+
+    def display_help(self):
+        """显示帮助信息"""
+        help_text = """
+=== 计算器帮助 ===
+基本运算:
+  + <数字>     加法
+  - <数字>     减法
+  * <数字>     乘法
+  / <数字>     除法
+  ** <数字>    幂运算
+  sqrt         平方根
+
+三角函数:
+  sin          正弦
+  cos          余弦
+  tan          正切
+
+其他函数:
+  log          常用对数
+  ln           自然对数
+  !            阶乘
+  % <数字>     百分比
+
+内存操作:
+  ms           存储到内存
+  mr           从内存读取
+  mc           清除内存
+  m+           加到内存
+
+其他命令:
+  c            清除
+  h            显示历史
+  help         显示帮助
+  quit/exit    退出
+
+常数:
+  pi           圆周率
+  e            自然常数
+  phi          黄金比例
+        """
+        print(help_text)
+
+    def run(self):
+        """运行计算器"""
+        print("=== 高级计算器 ===")
+        print("输入 'help' 查看帮助，输入 'quit' 退出")
+        print(f"当前值: {self.calc.current_value}")
+
+        while self.running:
+            try:
+                command = input("\\n> ").strip().lower()
+
+                if command in ['quit', 'exit']:
+                    self.running = False
+                    print("再见！")
+                    break
+
+                elif command == 'help':
+                    self.display_help()
+
+                elif command == 'c':
+                    self.calc.clear()
+                    print(f"当前值: {self.calc.current_value}")
+
+                elif command == 'h':
+                    history = self.calc.history.get_history()
+                    if history:
+                        print("\\n=== 最近操作历史 ===")
+                        for record in history:
+                            print(record)
+                    else:
+                        print("暂无历史记录")
+
+                elif command == 'ms':
+                    self.calc.memory.store(self.calc.current_value)
+
+                elif command == 'mr':
+                    value = self.calc.memory.recall()
+                    self.calc.set_value(value)
+                    print(f"当前值: {self.calc.current_value}")
+
+                elif command == 'mc':
+                    self.calc.memory.clear()
+
+                elif command.startswith('m+'):
+                    self.calc.memory.add_to_memory(self.calc.current_value)
+
+                elif command in ['pi', 'e', 'phi']:
+                    self.calc.get_constant(command)
+                    print(f"当前值: {self.calc.current_value}")
+
+                elif command == 'sqrt':
+                    self.calc.square_root()
+                    print(f"当前值: {self.calc.current_value}")
+
+                elif command in ['sin', 'cos', 'tan']:
+                    getattr(self.calc, command)()
+                    print(f"当前值: {self.calc.current_value}")
+
+                elif command == 'log':
+                    self.calc.log()
+                    print(f"当前值: {self.calc.current_value}")
+
+                elif command == 'ln':
+                    self.calc.log(math.e)
+                    print(f"当前值: {self.calc.current_value}")
+
+                elif command == '!':
+                    self.calc.factorial()
+                    print(f"当前值: {self.calc.current_value}")
+
+                else:
+                    # 处理数字和运算符
+                    self.process_calculation(command)
+                    print(f"当前值: {self.calc.current_value}")
+
+            except Exception as e:
+                print(f"错误: {e}")
+                print("输入 'help' 查看帮助")
+
+    def process_calculation(self, command):
+        """处理计算命令"""
+        # 简单的命令解析
+        if command.startswith('+'):
+            value = float(command[1:].strip())
+            self.calc.add(value)
+        elif command.startswith('-'):
+            value = float(command[1:].strip())
+            self.calc.subtract(value)
+        elif command.startswith('*'):
+            if command.startswith('**'):
+                value = float(command[2:].strip())
+                self.calc.power(value)
+            else:
+                value = float(command[1:].strip())
+                self.calc.multiply(value)
+        elif command.startswith('/'):
+            value = float(command[1:].strip())
+            self.calc.divide(value)
+        elif command.startswith('%'):
+            value = float(command[1:].strip())
+            self.calc.percentage(value)
+        else:
+            # 尝试作为数字处理
+            try:
+                value = float(command)
+                self.calc.set_value(value)
+            except ValueError:
+                raise ValueError(f"无法识别的命令: {command}")
+
+# 演示计算器功能
+print("\\n=== 计算器功能演示 ===")
+
+# 创建计算器实例
+calc = AdvancedCalculator()
+
+# 基本运算演示
+print("\\n1. 基本运算:")
+calc.set_value(10)
+print(f"设置初值: {calc.current_value}")
+calc.add(5)
+print(f"加5: {calc.current_value}")
+calc.multiply(2)
+print(f"乘2: {calc.current_value}")
+calc.divide(3)
+print(f"除3: {calc.current_value:.2f}")
+
+# 高级运算演示
+print("\\n2. 高级运算:")
+calc.set_value(16)
+calc.square_root()
+print(f"√16 = {calc.current_value}")
+
+calc.set_value(2)
+calc.power(3)
+print(f"2³ = {calc.current_value}")
+
+# 三角函数演示
+print("\\n3. 三角函数:")
+calc.set_value(30)
+calc.sin()
+print(f"sin(30°) = {calc.current_value:.4f}")
+
+calc.set_value(60)
+calc.cos()
+print(f"cos(60°) = {calc.current_value:.4f}")
+
+# 内存功能演示
+print("\\n4. 内存功能:")
+calc.set_value(42)
+calc.memory.store(calc.current_value)
+calc.set_value(0)
+stored = calc.memory.recall()
+print(f"从内存读取: {stored}")
+
+# 历史记录演示
+print("\\n5. 历史记录:")
+history = calc.history.get_history(5)
+for record in history[-3:]:  # 显示最后3条记录
+    print(f"  {record}")
+
+print("\\n计算器演示完成！")
+print("要使用交互式计算器，请运行 CalculatorInterface().run()")`,
+            exercise: {
+              id: 'calculator-project-exercise',
+              description: "创建一个简化版的计算器程序，实现基本运算和内存功能",
+              initialCode: `# 简化计算器项目
+class SimpleCalculator:
+    def __init__(self):
+        self.current_value = 0
+        self.memory_value = 0
+        self.history = []
+
+    def set_value(self, value):
+        """设置当前值"""
+        # TODO: 实现设置当前值的功能
+        pass
+
+    def add(self, value):
+        """加法运算"""
+        # TODO: 实现加法，更新current_value，记录到history
+        pass
+
+    def subtract(self, value):
+        """减法运算"""
+        # TODO: 实现减法，更新current_value，记录到history
+        pass
+
+    def multiply(self, value):
+        """乘法运算"""
+        # TODO: 实现乘法，更新current_value，记录到history
+        pass
+
+    def divide(self, value):
+        """除法运算"""
+        # TODO: 实现除法，处理除零异常，更新current_value，记录到history
+        pass
+
+    def clear(self):
+        """清除当前值"""
+        # TODO: 将current_value重置为0，记录到history
+        pass
+
+    def memory_store(self):
+        """存储当前值到内存"""
+        # TODO: 将current_value存储到memory_value
+        pass
+
+    def memory_recall(self):
+        """从内存读取值"""
+        # TODO: 将memory_value设置为current_value
+        pass
+
+    def memory_clear(self):
+        """清除内存"""
+        # TODO: 将memory_value重置为0
+        pass
+
+    def get_history(self):
+        """获取历史记录"""
+        # TODO: 返回最近5条历史记录
+        pass
+
+    def display_status(self):
+        """显示计算器状态"""
+        # TODO: 显示当前值、内存值和最近的历史记录
+        pass
+
+# 测试代码
+if __name__ == "__main__":
+    calc = SimpleCalculator()
+
+    print("=== 简化计算器测试 ===")
+
+    # 基本运算测试
+    calc.set_value(10)
+    calc.add(5)
+    calc.multiply(2)
+    calc.subtract(3)
+    calc.divide(2)
+
+    print(f"计算结果: {calc.current_value}")
+
+    # 内存功能测试
+    calc.memory_store()
+    calc.clear()
+    calc.memory_recall()
+
+    print(f"从内存恢复: {calc.current_value}")
+
+    # 显示状态
+    calc.display_status()
+
+    # 异常处理测试
+    try:
+        calc.divide(0)
+    except ZeroDivisionError as e:
+        print(f"捕获异常: {e}")`,
+              expectedOutput: `=== 简化计算器测试 ===
+计算结果: 14.0
+从内存恢复: 14.0
+
+=== 计算器状态 ===
+当前值: 14.0
+内存值: 14.0
+历史记录:
+  设置值: 10
+  10 + 5 = 15
+  15 * 2 = 30
+  30 - 3 = 27
+  27 / 2 = 14.0
+
+捕获异常: 不能除以零`,
+              hints: [
+                "在每个运算方法中记录操作到history列表",
+                "使用f-string格式化历史记录",
+                "在divide方法中检查除数是否为零",
+                "get_history方法返回history[-5:]获取最近5条记录"
+              ]
+            },
+            order: 1,
             completed: false
           }
         ]
