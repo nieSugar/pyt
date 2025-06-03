@@ -1,5 +1,10 @@
 /* 现代化Python学习平台样式 */
 
+// 导入第三方库样式
+@import 'animate.css';
+@import 'prismjs/themes/prism-tomorrow.css';
+@import 'ngx-toastr/toastr';
+
 // 导入现代字体
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
@@ -836,4 +841,81 @@ body {
   .grid-cols-2, .grid-cols-3, .grid-cols-4 {
     grid-template-columns: 1fr;
   }
+}
+
+// 现代化Toastr样式
+.modern-toast {
+  border-radius: 12px !important;
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: var(--shadow-xl);
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+
+  &.toast-success {
+    background: linear-gradient(135deg, var(--success-border), #16a34a) !important;
+    border-color: var(--success-border);
+
+    .toast-progress {
+      background: rgba(255, 255, 255, 0.3) !important;
+    }
+  }
+
+  &.toast-error {
+    background: linear-gradient(135deg, var(--error-border), #dc2626) !important;
+    border-color: var(--error-border);
+
+    .toast-progress {
+      background: rgba(255, 255, 255, 0.3) !important;
+    }
+  }
+
+  &.toast-warning {
+    background: linear-gradient(135deg, var(--warning-border), #d97706) !important;
+    border-color: var(--warning-border);
+
+    .toast-progress {
+      background: rgba(255, 255, 255, 0.3) !important;
+    }
+  }
+
+  &.toast-info {
+    background: linear-gradient(135deg, var(--info-border), #4f46e5) !important;
+    border-color: var(--info-border);
+
+    .toast-progress {
+      background: rgba(255, 255, 255, 0.3) !important;
+    }
+  }
+
+  .toast-title {
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    margin-bottom: 4px !important;
+  }
+
+  .toast-message {
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+    opacity: 0.95;
+  }
+
+  .toast-close-button {
+    color: rgba(255, 255, 255, 0.8) !important;
+    opacity: 0.8 !important;
+
+    &:hover {
+      opacity: 1 !important;
+    }
+  }
+}
+
+// 现代化Snackbar样式
+.modern-snackbar {
+  border-radius: 12px !important;
+  backdrop-filter: blur(16px);
+  background: var(--surface-elevated) !important;
+  color: var(--text-primary) !important;
+  box-shadow: var(--shadow-xl);
+  border: 1px solid var(--border-light);
 }

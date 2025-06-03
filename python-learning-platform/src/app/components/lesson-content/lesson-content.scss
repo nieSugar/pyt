@@ -171,25 +171,36 @@
 
 .no-lesson {
   .no-lesson-content {
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
     padding: 48px 24px;
 
-    .no-lesson-icon {
-      font-size: 4rem;
-      width: 4rem;
-      height: 4rem;
-      color: var(--mat-text-secondary, rgba(0, 0, 0, 0.6));
-      margin-bottom: 16px;
-    }
+    .no-lesson-text {
+      text-align: center;
 
-    h3 {
-      margin: 16px 0 8px 0;
-      color: var(--mat-text-primary, rgba(0, 0, 0, 0.87));
-    }
+      .no-lesson-icon {
+        font-size: 4rem;
+        width: 4rem;
+        height: 4rem;
+        color: var(--primary-color);
+        margin-bottom: 16px;
+        animation: float 3s ease-in-out infinite;
+      }
 
-    p {
-      margin: 0;
-      color: var(--mat-text-secondary, rgba(0, 0, 0, 0.6));
+      h3 {
+        margin: 16px 0 8px 0;
+        color: var(--text-primary);
+        font-size: 24px;
+        font-weight: 600;
+      }
+
+      p {
+        margin: 0;
+        color: var(--text-secondary);
+        font-size: 16px;
+      }
     }
   }
 }

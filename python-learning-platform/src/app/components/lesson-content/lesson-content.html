@@ -1,5 +1,5 @@
 <div class="lesson-content-container" *ngIf="lesson">
-  <mat-card class="content-card">
+  <mat-card class="content-card animate__animated animate__fadeInUp">
     <mat-card-header>
       <mat-icon mat-card-avatar class="lesson-type-icon">
         {{ lesson.type === 'tutorial' ? 'article' :
@@ -7,25 +7,46 @@
       </mat-icon>
       <mat-card-title>{{ lesson.title }}</mat-card-title>
       <mat-card-subtitle>
-        {{ lesson.type === 'tutorial' ? '教程' :
-           lesson.type === 'exercise' ? '练习' : '测验' }}
+        <mat-chip-set>
+          <mat-chip [color]="getChipColor(lesson.type)" selected>
+            <mat-icon matChipAvatar>
+              {{ lesson.type === 'tutorial' ? 'article' :
+                 lesson.type === 'exercise' ? 'code' : 'quiz' }}
+            </mat-icon>
+            {{ lesson.type === 'tutorial' ? '教程' :
+               lesson.type === 'exercise' ? '练习' : '测验' }}
+          </mat-chip>
+        </mat-chip-set>
       </mat-card-subtitle>
     </mat-card-header>
 
+    <mat-divider></mat-divider>
+
     <mat-card-content>
-      <div class="lesson-content" [innerHTML]="renderMarkdown(lesson.content)">
-      </div>
+      <!-- 使用增强的Markdown渲染器 -->
+      <app-enhanced-markdown
+        [content]="lesson.content"
+        [enableCodeCopy]="true"
+        [enableSyntaxHighlight]="true">
+      </app-enhanced-markdown>
     </mat-card-content>
   </mat-card>
 </div>
 
 <div class="no-lesson" *ngIf="!lesson">
-  <mat-card>
+  <mat-card class="animate__animated animate__fadeIn">
     <mat-card-content>
       <div class="no-lesson-content">
-        <mat-icon class="no-lesson-icon">school</mat-icon>
-        <h3>请选择一个课程</h3>
-        <p>从左侧菜单中选择要学习的课程内容</p>
+        <app-loading-animation
+          type="code"
+          message="等待选择课程"
+          [showText]="true">
+        </app-loading-animation>
+        <div class="no-lesson-text">
+          <mat-icon class="no-lesson-icon">school</mat-icon>
+          <h3>请选择一个课程</h3>
+          <p>从左侧菜单中选择要学习的课程内容</p>
+        </div>
       </div>
     </mat-card-content>
   </mat-card>

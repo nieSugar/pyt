@@ -7,6 +7,8 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatBadgeModule } from '@angular/material/badge';
+import { EnhancedMarkdown } from '../enhanced-markdown/enhanced-markdown';
+import { LoadingAnimation } from '../loading-animation/loading-animation';
 import { Lesson } from '../../models/course.model';
 
 @Component({
@@ -19,13 +21,31 @@ import { Lesson } from '../../models/course.model';
     MatChipsModule,
     MatDividerModule,
     MatTooltipModule,
-    MatBadgeModule
+    MatBadgeModule,
+    EnhancedMarkdown,
+    LoadingAnimation
   ],
   templateUrl: './lesson-content.html',
   styleUrl: './lesson-content.scss'
 })
 export class LessonContent {
   @Input() lesson: Lesson | null = null;
+
+  /**
+   * 获取芯片颜色
+   */
+  getChipColor(type: string): 'primary' | 'accent' | 'warn' {
+    switch (type) {
+      case 'tutorial':
+        return 'primary';
+      case 'exercise':
+        return 'accent';
+      case 'quiz':
+        return 'warn';
+      default:
+        return 'primary';
+    }
+  }
 
   // 简单的Markdown渲染 - 将来可以用专门的库替换
   renderMarkdown(content: string): string {
