@@ -25,8 +25,8 @@ export class CourseService {
       id: 'python-basics',
       title: 'Python 基础教程',
       description: '从零开始学习 Python 编程语言',
-      totalLessons: 70,
-      estimatedTime: '90 小时',
+      totalLessons: 71,
+      estimatedTime: '95 小时',
       difficulty: 'beginner',
       modules: this.getDefaultModules()
     };
@@ -5145,6 +5145,667 @@ if __name__ == "__main__":
               ]
             },
             order: 1,
+            completed: false
+          },
+          {
+            id: 'number-guessing-game',
+            title: '猜数字游戏',
+            content: `
+# 猜数字游戏项目
+
+这是一个交互式猜数字游戏项目，将运用随机数生成、用户输入处理、游戏逻辑设计等多个Python知识点。
+
+## 项目目标
+
+创建一个功能完整的猜数字游戏：
+1. 多难度级别选择（简单、中等、困难）
+2. 智能提示系统（太大/太小/接近了）
+3. 计分和排行榜系统
+4. 游戏统计功能
+5. 用户友好的界面和反馈
+
+## 游戏规则
+
+### 难度级别
+- **简单模式**: 1-10范围，最多5次机会
+- **中等模式**: 1-50范围，最多7次机会
+- **困难模式**: 1-100范围，最多10次机会
+
+### 计分系统
+- 基础分数 = 难度系数 × 100
+- 最终得分 = 基础分数 × (剩余机会数 / 总机会数)
+- 连续猜对有额外奖励分数
+
+## 核心功能设计
+
+### 1. 游戏核心类
+\`\`\`python
+class NumberGuessingGame:
+    def __init__(self):
+        self.difficulty_levels = {
+            'easy': {'range': (1, 10), 'max_attempts': 5, 'multiplier': 1},
+            'medium': {'range': (1, 50), 'max_attempts': 7, 'multiplier': 2},
+            'hard': {'range': (1, 100), 'max_attempts': 10, 'multiplier': 3}
+        }
+        self.current_game = None
+        self.statistics = GameStatistics()
+        self.leaderboard = Leaderboard()
+
+    def start_new_game(self, difficulty='medium'):
+        config = self.difficulty_levels[difficulty]
+        self.current_game = Game(config)
+        return self.current_game
+\`\`\`
+
+### 2. 游戏状态管理
+\`\`\`python
+class Game:
+    def __init__(self, config):
+        self.min_num, self.max_num = config['range']
+        self.max_attempts = config['max_attempts']
+        self.multiplier = config['multiplier']
+        self.secret_number = random.randint(self.min_num, self.max_num)
+        self.attempts_used = 0
+        self.guesses = []
+        self.is_won = False
+        self.is_finished = False
+
+    def make_guess(self, guess):
+        if self.is_finished:
+            return "游戏已结束"
+
+        self.attempts_used += 1
+        self.guesses.append(guess)
+
+        if guess == self.secret_number:
+            self.is_won = True
+            self.is_finished = True
+            return "恭喜！猜对了！"
+        elif self.attempts_used >= self.max_attempts:
+            self.is_finished = True
+            return f"游戏结束！答案是 {self.secret_number}"
+        else:
+            return self.get_hint(guess)
+\`\`\`
+
+### 3. 智能提示系统
+\`\`\`python
+def get_hint(self, guess):
+    difference = abs(guess - self.secret_number)
+    range_size = self.max_num - self.min_num + 1
+
+    if difference <= range_size * 0.05:
+        return "非常接近了！🔥"
+    elif difference <= range_size * 0.1:
+        return "很接近了！👍"
+    elif difference <= range_size * 0.2:
+        return "比较接近 😊"
+    elif guess < self.secret_number:
+        return "太小了，再大一点 ⬆️"
+    else:
+        return "太大了，再小一点 ⬇️"
+\`\`\`
+
+## 高级功能
+
+### 1. 游戏统计
+- 总游戏次数
+- 胜率统计
+- 平均猜测次数
+- 最佳成绩记录
+- 各难度级别表现
+
+### 2. 排行榜系统
+- 按得分排序
+- 按难度分类
+- 历史最佳记录
+- 连胜记录
+
+### 3. 数据持久化
+- 游戏历史保存
+- 统计数据存储
+- 用户设置保存
+
+## 用户界面设计
+
+创建友好的命令行界面：
+- 清晰的菜单系统
+- 实时游戏状态显示
+- 彩色文本提示
+- 进度条显示
+            `,
+            type: 'tutorial',
+            codeExample: `# 完整的猜数字游戏实现
+print("=== 智能猜数字游戏 ===")
+
+import random
+import json
+from datetime import datetime
+from typing import Dict, List, Tuple, Optional
+
+class GameStatistics:
+    """游戏统计类"""
+    def __init__(self):
+        self.total_games = 0
+        self.games_won = 0
+        self.total_attempts = 0
+        self.best_scores = {'easy': 0, 'medium': 0, 'hard': 0}
+        self.difficulty_stats = {
+            'easy': {'played': 0, 'won': 0, 'avg_attempts': 0},
+            'medium': {'played': 0, 'won': 0, 'avg_attempts': 0},
+            'hard': {'played': 0, 'won': 0, 'avg_attempts': 0}
+        }
+
+    def add_game_result(self, difficulty: str, won: bool, attempts: int, score: int):
+        """添加游戏结果"""
+        self.total_games += 1
+        self.total_attempts += attempts
+
+        if won:
+            self.games_won += 1
+            if score > self.best_scores[difficulty]:
+                self.best_scores[difficulty] = score
+
+        # 更新难度统计
+        diff_stats = self.difficulty_stats[difficulty]
+        diff_stats['played'] += 1
+        if won:
+            diff_stats['won'] += 1
+
+        # 计算平均尝试次数
+        if diff_stats['played'] > 0:
+            total_attempts_for_difficulty = diff_stats.get('total_attempts', 0) + attempts
+            diff_stats['total_attempts'] = total_attempts_for_difficulty
+            diff_stats['avg_attempts'] = total_attempts_for_difficulty / diff_stats['played']
+
+    def get_win_rate(self) -> float:
+        """获取胜率"""
+        return (self.games_won / self.total_games * 100) if self.total_games > 0 else 0
+
+    def get_average_attempts(self) -> float:
+        """获取平均尝试次数"""
+        return self.total_attempts / self.total_games if self.total_games > 0 else 0
+
+    def display_stats(self):
+        """显示统计信息"""
+        print("\\n=== 游戏统计 ===")
+        print(f"总游戏次数: {self.total_games}")
+        print(f"获胜次数: {self.games_won}")
+        print(f"胜率: {self.get_win_rate():.1f}%")
+        print(f"平均尝试次数: {self.get_average_attempts():.1f}")
+
+        print("\\n各难度最佳得分:")
+        for difficulty, score in self.best_scores.items():
+            print(f"  {difficulty.capitalize()}: {score}")
+
+        print("\\n各难度详细统计:")
+        for difficulty, stats in self.difficulty_stats.items():
+            if stats['played'] > 0:
+                win_rate = (stats['won'] / stats['played'] * 100)
+                print(f"  {difficulty.capitalize()}: {stats['played']}局, 胜率{win_rate:.1f}%, 平均{stats['avg_attempts']:.1f}次")
+
+class Leaderboard:
+    """排行榜类"""
+    def __init__(self):
+        self.scores = {'easy': [], 'medium': [], 'hard': []}
+        self.max_entries = 10
+
+    def add_score(self, difficulty: str, player_name: str, score: int, attempts: int):
+        """添加得分记录"""
+        entry = {
+            'player': player_name,
+            'score': score,
+            'attempts': attempts,
+            'date': datetime.now().strftime("%Y-%m-%d %H:%M")
+        }
+
+        self.scores[difficulty].append(entry)
+        # 按得分排序，保留前10名
+        self.scores[difficulty].sort(key=lambda x: x['score'], reverse=True)
+        self.scores[difficulty] = self.scores[difficulty][:self.max_entries]
+
+    def display_leaderboard(self, difficulty: str = None):
+        """显示排行榜"""
+        if difficulty:
+            difficulties = [difficulty]
+        else:
+            difficulties = ['easy', 'medium', 'hard']
+
+        for diff in difficulties:
+            print(f"\\n=== {diff.capitalize()} 模式排行榜 ===")
+            if not self.scores[diff]:
+                print("暂无记录")
+                continue
+
+            for i, entry in enumerate(self.scores[diff], 1):
+                print(f"{i:2d}. {entry['player']:10s} - {entry['score']:4d}分 "
+                      f"({entry['attempts']}次尝试) - {entry['date']}")
+
+class Game:
+    """单局游戏类"""
+    def __init__(self, config: Dict, player_name: str = "Player"):
+        self.min_num, self.max_num = config['range']
+        self.max_attempts = config['max_attempts']
+        self.multiplier = config['multiplier']
+        self.player_name = player_name
+
+        self.secret_number = random.randint(self.min_num, self.max_num)
+        self.attempts_used = 0
+        self.guesses = []
+        self.is_won = False
+        self.is_finished = False
+        self.start_time = datetime.now()
+
+    def make_guess(self, guess: int) -> str:
+        """进行一次猜测"""
+        if self.is_finished:
+            return "游戏已结束"
+
+        if guess < self.min_num or guess > self.max_num:
+            return f"请输入 {self.min_num}-{self.max_num} 范围内的数字"
+
+        self.attempts_used += 1
+        self.guesses.append(guess)
+
+        if guess == self.secret_number:
+            self.is_won = True
+            self.is_finished = True
+            return "🎉 恭喜！猜对了！"
+        elif self.attempts_used >= self.max_attempts:
+            self.is_finished = True
+            return f"😔 游戏结束！答案是 {self.secret_number}"
+        else:
+            hint = self.get_hint(guess)
+            remaining = self.max_attempts - self.attempts_used
+            return f"{hint} (剩余 {remaining} 次机会)"
+
+    def get_hint(self, guess: int) -> str:
+        """获取智能提示"""
+        difference = abs(guess - self.secret_number)
+        range_size = self.max_num - self.min_num + 1
+
+        # 根据差距给出不同级别的提示
+        if difference <= max(1, range_size * 0.05):
+            return "🔥 非常接近了！"
+        elif difference <= max(2, range_size * 0.1):
+            return "👍 很接近了！"
+        elif difference <= max(3, range_size * 0.2):
+            return "😊 比较接近"
+        elif guess < self.secret_number:
+            if difference > range_size * 0.5:
+                return "⬆️ 太小了，大很多！"
+            else:
+                return "⬆️ 太小了，再大一点"
+        else:
+            if difference > range_size * 0.5:
+                return "⬇️ 太大了，小很多！"
+            else:
+                return "⬇️ 太大了，再小一点"
+
+    def calculate_score(self) -> int:
+        """计算得分"""
+        if not self.is_won:
+            return 0
+
+        base_score = self.multiplier * 100
+        remaining_attempts = self.max_attempts - self.attempts_used
+        efficiency_bonus = (remaining_attempts / self.max_attempts) * base_score
+
+        # 时间奖励（快速完成有额外分数）
+        time_taken = (datetime.now() - self.start_time).total_seconds()
+        time_bonus = max(0, 50 - time_taken) if time_taken < 50 else 0
+
+        total_score = int(base_score + efficiency_bonus + time_bonus)
+        return total_score
+
+    def get_game_summary(self) -> Dict:
+        """获取游戏总结"""
+        return {
+            'player': self.player_name,
+            'secret_number': self.secret_number,
+            'attempts_used': self.attempts_used,
+            'max_attempts': self.max_attempts,
+            'guesses': self.guesses,
+            'is_won': self.is_won,
+            'score': self.calculate_score(),
+            'time_taken': (datetime.now() - self.start_time).total_seconds()
+        }
+
+class NumberGuessingGame:
+    """猜数字游戏主类"""
+
+    def __init__(self):
+        self.difficulty_levels = {
+            'easy': {
+                'name': '简单',
+                'range': (1, 10),
+                'max_attempts': 5,
+                'multiplier': 1,
+                'description': '1-10范围，5次机会'
+            },
+            'medium': {
+                'name': '中等',
+                'range': (1, 50),
+                'max_attempts': 7,
+                'multiplier': 2,
+                'description': '1-50范围，7次机会'
+            },
+            'hard': {
+                'name': '困难',
+                'range': (1, 100),
+                'max_attempts': 10,
+                'multiplier': 3,
+                'description': '1-100范围，10次机会'
+            }
+        }
+
+        self.current_game = None
+        self.statistics = GameStatistics()
+        self.leaderboard = Leaderboard()
+        self.player_name = "Player"
+
+    def display_menu(self):
+        """显示主菜单"""
+        print("\\n" + "="*50)
+        print("🎯 智能猜数字游戏")
+        print("="*50)
+        print("1. 开始新游戏")
+        print("2. 查看游戏统计")
+        print("3. 查看排行榜")
+        print("4. 设置玩家名称")
+        print("5. 游戏规则")
+        print("0. 退出游戏")
+        print("="*50)
+
+    def display_difficulty_menu(self):
+        """显示难度选择菜单"""
+        print("\\n选择游戏难度:")
+        for key, config in self.difficulty_levels.items():
+            print(f"{key[0].upper()}. {config['name']} - {config['description']}")
+
+    def start_new_game(self):
+        """开始新游戏"""
+        self.display_difficulty_menu()
+
+        while True:
+            choice = input("\\n请选择难度 (E/M/H): ").lower()
+            if choice in ['e', 'easy']:
+                difficulty = 'easy'
+                break
+            elif choice in ['m', 'medium']:
+                difficulty = 'medium'
+                break
+            elif choice in ['h', 'hard']:
+                difficulty = 'hard'
+                break
+            else:
+                print("无效选择，请重新输入")
+
+        config = self.difficulty_levels[difficulty]
+        self.current_game = Game(config, self.player_name)
+
+        print(f"\\n🎮 开始 {config['name']} 模式游戏！")
+        print(f"范围: {config['range'][0]}-{config['range'][1]}")
+        print(f"最大尝试次数: {config['max_attempts']}")
+        print("\\n开始猜数字吧！")
+
+        self.play_game(difficulty)
+
+    def play_game(self, difficulty: str):
+        """进行游戏"""
+        while not self.current_game.is_finished:
+            try:
+                # 显示当前状态
+                attempts_left = self.current_game.max_attempts - self.current_game.attempts_used
+                print(f"\\n剩余机会: {attempts_left}")
+
+                if self.current_game.guesses:
+                    print(f"已猜过: {', '.join(map(str, self.current_game.guesses))}")
+
+                guess_input = input(f"请输入你的猜测 ({self.current_game.min_num}-{self.current_game.max_num}): ")
+
+                if guess_input.lower() in ['quit', 'exit']:
+                    print("游戏已退出")
+                    return
+
+                guess = int(guess_input)
+                result = self.current_game.make_guess(guess)
+                print(result)
+
+            except ValueError:
+                print("请输入有效的数字！")
+            except KeyboardInterrupt:
+                print("\\n游戏被中断")
+                return
+
+        # 游戏结束，显示结果
+        self.show_game_result(difficulty)
+
+    def show_game_result(self, difficulty: str):
+        """显示游戏结果"""
+        summary = self.current_game.get_game_summary()
+
+        print("\\n" + "="*40)
+        print("🏁 游戏结束")
+        print("="*40)
+        print(f"玩家: {summary['player']}")
+        print(f"答案: {summary['secret_number']}")
+        print(f"使用次数: {summary['attempts_used']}/{summary['max_attempts']}")
+        print(f"猜测历史: {' → '.join(map(str, summary['guesses']))}")
+
+        if summary['is_won']:
+            print(f"🎉 恭喜获胜！")
+            print(f"🏆 得分: {summary['score']}")
+            print(f"⏱️ 用时: {summary['time_taken']:.1f}秒")
+
+            # 添加到排行榜
+            self.leaderboard.add_score(
+                difficulty,
+                summary['player'],
+                summary['score'],
+                summary['attempts_used']
+            )
+        else:
+            print("😔 很遗憾，下次加油！")
+
+        # 更新统计
+        self.statistics.add_game_result(
+            difficulty,
+            summary['is_won'],
+            summary['attempts_used'],
+            summary['score']
+        )
+
+    def display_rules(self):
+        """显示游戏规则"""
+        print("\\n" + "="*50)
+        print("📖 游戏规则")
+        print("="*50)
+        print("🎯 目标: 在限定次数内猜出随机生成的数字")
+        print("\\n🎮 游戏模式:")
+        for key, config in self.difficulty_levels.items():
+            print(f"  • {config['name']}: {config['description']}")
+
+        print("\\n💡 提示系统:")
+        print("  🔥 非常接近了！ - 差距很小")
+        print("  👍 很接近了！ - 差距较小")
+        print("  😊 比较接近 - 差距中等")
+        print("  ⬆️ 太小了 - 需要增大")
+        print("  ⬇️ 太大了 - 需要减小")
+
+        print("\\n🏆 计分规则:")
+        print("  • 基础分数 = 难度系数 × 100")
+        print("  • 效率奖励 = 基础分数 × (剩余机会/总机会)")
+        print("  • 时间奖励 = 快速完成额外奖励")
+        print("  • 最终得分 = 基础分数 + 效率奖励 + 时间奖励")
+
+    def set_player_name(self):
+        """设置玩家名称"""
+        name = input(f"\\n当前玩家名称: {self.player_name}\\n请输入新的玩家名称: ").strip()
+        if name:
+            self.player_name = name
+            print(f"玩家名称已设置为: {self.player_name}")
+        else:
+            print("名称不能为空")
+
+    def run(self):
+        """运行游戏主循环"""
+        print("🎯 欢迎来到智能猜数字游戏！")
+
+        while True:
+            self.display_menu()
+
+            try:
+                choice = input("\\n请选择操作 (0-5): ").strip()
+
+                if choice == '1':
+                    self.start_new_game()
+                elif choice == '2':
+                    self.statistics.display_stats()
+                elif choice == '3':
+                    self.leaderboard.display_leaderboard()
+                elif choice == '4':
+                    self.set_player_name()
+                elif choice == '5':
+                    self.display_rules()
+                elif choice == '0':
+                    print("\\n👋 感谢游玩，再见！")
+                    break
+                else:
+                    print("无效选择，请重新输入")
+
+            except KeyboardInterrupt:
+                print("\\n\\n👋 游戏已退出，再见！")
+                break
+            except Exception as e:
+                print(f"发生错误: {e}")
+
+# 游戏演示
+print("\\n=== 猜数字游戏功能演示 ===")
+
+# 创建游戏实例
+game_system = NumberGuessingGame()
+
+# 演示游戏创建
+print("\\n1. 创建中等难度游戏:")
+config = game_system.difficulty_levels['medium']
+demo_game = Game(config, "演示玩家")
+print(f"游戏范围: {demo_game.min_num}-{demo_game.max_num}")
+print(f"最大尝试次数: {demo_game.max_attempts}")
+print(f"神秘数字: {demo_game.secret_number} (演示用)")
+
+# 演示猜测过程
+print("\\n2. 模拟猜测过程:")
+test_guesses = [25, 35, 30, demo_game.secret_number]
+for guess in test_guesses:
+    if not demo_game.is_finished:
+        result = demo_game.make_guess(guess)
+        print(f"猜测 {guess}: {result}")
+
+# 演示得分计算
+print("\\n3. 游戏结果:")
+summary = demo_game.get_game_summary()
+print(f"获胜: {'是' if summary['is_won'] else '否'}")
+print(f"使用次数: {summary['attempts_used']}")
+print(f"得分: {summary['score']}")
+
+# 演示统计功能
+print("\\n4. 统计系统演示:")
+game_system.statistics.add_game_result('medium', True, 4, 150)
+game_system.statistics.add_game_result('easy', True, 3, 120)
+game_system.statistics.add_game_result('hard', False, 10, 0)
+game_system.statistics.display_stats()
+
+# 演示排行榜
+print("\\n5. 排行榜演示:")
+game_system.leaderboard.add_score('medium', '玩家A', 150, 4)
+game_system.leaderboard.add_score('medium', '玩家B', 120, 5)
+game_system.leaderboard.display_leaderboard('medium')
+
+print("\\n猜数字游戏演示完成！")
+print("要开始完整游戏，请运行: NumberGuessingGame().run()")`,
+            exercise: {
+              id: 'number-guessing-exercise',
+              description: "创建一个简化版的猜数字游戏，实现基本的游戏逻辑和提示系统",
+              initialCode: `# 简化猜数字游戏
+import random
+
+class SimpleGuessingGame:
+    def __init__(self, min_num=1, max_num=10, max_attempts=5):
+        self.min_num = min_num
+        self.max_num = max_num
+        self.max_attempts = max_attempts
+        self.secret_number = random.randint(min_num, max_num)
+        self.attempts_used = 0
+        self.is_finished = False
+        self.is_won = False
+
+    def make_guess(self, guess):
+        """进行一次猜测"""
+        # TODO: 实现猜测逻辑
+        # 1. 检查游戏是否已结束
+        # 2. 增加尝试次数
+        # 3. 检查是否猜对
+        # 4. 检查是否用完机会
+        # 5. 返回相应的提示信息
+        pass
+
+    def get_hint(self, guess):
+        """获取提示信息"""
+        # TODO: 根据猜测值与答案的关系返回提示
+        # 如果太小返回"太小了"
+        # 如果太大返回"太大了"
+        pass
+
+    def get_remaining_attempts(self):
+        """获取剩余尝试次数"""
+        # TODO: 计算并返回剩余尝试次数
+        pass
+
+    def reset_game(self):
+        """重置游戏"""
+        # TODO: 重新生成随机数，重置所有状态
+        pass
+
+# 测试代码
+if __name__ == "__main__":
+    game = SimpleGuessingGame(1, 10, 5)
+
+    print(f"猜数字游戏开始！范围: {game.min_num}-{game.max_num}")
+    print(f"你有 {game.max_attempts} 次机会")
+    print(f"神秘数字是: {game.secret_number}")  # 测试用，实际游戏中应该隐藏
+
+    # 模拟几次猜测
+    test_guesses = [5, 8, game.secret_number]
+
+    for guess in test_guesses:
+        if not game.is_finished:
+            result = game.make_guess(guess)
+            remaining = game.get_remaining_attempts()
+            print(f"猜测 {guess}: {result}")
+            if not game.is_finished:
+                print(f"剩余机会: {remaining}")
+
+    print(f"\\n游戏结果: {'获胜' if game.is_won else '失败'}")`,
+              expectedOutput: `猜数字游戏开始！范围: 1-10
+你有 5 次机会
+神秘数字是: 7
+猜测 5: 太小了
+剩余机会: 4
+猜测 8: 太大了
+剩余机会: 3
+猜测 7: 恭喜！猜对了！
+
+游戏结果: 获胜`,
+              hints: [
+                "在make_guess中首先检查self.is_finished状态",
+                "猜对时设置self.is_won = True和self.is_finished = True",
+                "用完机会时只设置self.is_finished = True",
+                "get_hint方法比较guess和self.secret_number的大小关系",
+                "剩余次数 = self.max_attempts - self.attempts_used"
+              ]
+            },
+            order: 2,
             completed: false
           }
         ]
