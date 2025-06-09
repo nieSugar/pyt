@@ -7,7 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatChipsModule } from '@angular/material/chips';
 import { Subscription } from 'rxjs';
-import { CourseService } from '../../services/course';
+import { CourseService } from '../../services/course.service';
 import { Lesson as LessonModel, Course, UserProgress } from '../../models/course.model';
 import { LessonContent } from '../../components/lesson-content/lesson-content';
 import { CodeEditorComponent } from '../../components/code-editor/code-editor';

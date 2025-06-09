@@ -9,7 +9,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Subscription } from 'rxjs';
-import { CourseService } from '../../services/course';
+import { CourseService } from '../../services/course.service';
 import { Course, Module, Lesson, UserProgress } from '../../models/course.model';
 
 @Component({

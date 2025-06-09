@@ -8,7 +8,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { Subscription } from 'rxjs';
-import { CourseService } from '../../services/course';
+import { CourseService } from '../../services/course.service';
 import { Course, UserProgress } from '../../models/course.model';
 import { ProgressChartComponent } from '../../components/progress-chart/progress-chart';
 import { LearningPathComponent } from '../../components/learning-path/learning-path';

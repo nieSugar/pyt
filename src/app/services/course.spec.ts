@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { CourseService } from './course';
+import { CourseService } from './course.service';
 import { Course, UserProgress } from '../models/course.model';
 
 describe('CourseService', () => {
