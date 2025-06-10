@@ -1,7 +1,14 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { UserProgress } from '../models/course.model';
 import { StorageService } from './storage.service';
+
+export interface OverallProgress {
+  completedLessons: number;
+  totalLessons: number;
+  percentage: number;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +16,23 @@ import { StorageService } from './storage.service';
 export class ProgressService {
   private userProgressSubject = new BehaviorSubject<UserProgress | null>(null);
   public userProgress$ = this.userProgressSubject.asObservable();
+
+  private totalLessonsSubject = new BehaviorSubject<number>(0);
+
+  // 总体进度Observable
+  public overallProgress$: Observable<OverallProgress> = this.userProgress$.pipe(
+    map(progress => {
+      const completedLessons = progress?.completedLessons.length || 0;
+      const totalLessons = this.totalLessonsSubject.value;
+      const percentage = totalLessons > 0 ? (completedLessons / totalLessons) * 100 : 0;
+
+      return {
+        completedLessons,
+        totalLessons,
+        percentage
+      };
+    })
+  );
 
   constructor(private storageService: StorageService) {
     this.loadUserProgress();
@@ -135,5 +159,19 @@ export class ProgressService {
     const progress = this.userProgressSubject.value;
     if (!progress || totalLessons === 0) return 0;
     return (progress.completedLessons.length / totalLessons) * 100;
+  }
+
+  /**
+   * 设置总课程数
+   */
+  setTotalLessons(total: number): void {
+    this.totalLessonsSubject.next(total);
+  }
+
+  /**
+   * 获取总课程数
+   */
+  getTotalLessons(): number {
+    return this.totalLessonsSubject.value;
   }
 }

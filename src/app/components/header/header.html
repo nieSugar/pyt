@@ -1,55 +1,174 @@
-<mat-toolbar color="primary" class="app-header">
-  <!-- 左侧：Logo和标题 -->
-  <div class="header-left">
-    <a routerLink="/home" class="logo-container">
-      <mat-icon class="logo-icon">code</mat-icon>
-      <span class="app-title">Python学习平台</span>
-    </a>
+<header class="app-header" role="banner">
+  <div class="header-container">
+    <!-- 移动端菜单按钮 -->
+    <button
+      mat-icon-button
+      class="mobile-menu-toggle"
+      (click)="toggleMobileMenu()"
+      [attr.aria-label]="mobileMenuOpen ? '关闭菜单' : '打开菜单'"
+      [attr.aria-expanded]="mobileMenuOpen">
+      <mat-icon>{{ mobileMenuOpen ? 'close' : 'menu' }}</mat-icon>
+    </button>
+
+    <!-- 左侧：Logo和标题 -->
+    <div class="header-left">
+      <a routerLink="/home" class="logo-container" [attr.aria-label]="'返回首页'">
+        <div class="logo-wrapper">
+          <mat-icon class="logo-icon">code</mat-icon>
+          <div class="logo-pulse"></div>
+        </div>
+        <div class="title-wrapper">
+          <span class="app-title">Python学习平台</span>
+          <span class="app-subtitle">交互式编程学习</span>
+        </div>
+      </a>
+    </div>
+
+    <!-- 中间：导航菜单 -->
+    <nav class="header-center" role="navigation" [attr.aria-label]="'主导航'">
+      <div class="nav-menu">
+        <a
+          mat-button
+          routerLink="/home"
+          routerLinkActive="active"
+          class="nav-link"
+          [attr.aria-current]="isCurrentRoute('/home') ? 'page' : null">
+          <mat-icon>home</mat-icon>
+          <span>首页</span>
+          <div class="nav-indicator"></div>
+        </a>
+        <a
+          mat-button
+          routerLink="/lesson"
+          routerLinkActive="active"
+          class="nav-link"
+          [attr.aria-current]="isCurrentRoute('/lesson') ? 'page' : null">
+          <mat-icon>school</mat-icon>
+          <span>课程</span>
+          <div class="nav-indicator"></div>
+        </a>
+      </div>
+    </nav>
+
+    <!-- 右侧：用户操作 -->
+    <div class="header-right">
+      <!-- 进度指示器 -->
+      <div class="progress-indicator" *ngIf="showProgress">
+        <mat-icon class="progress-icon">trending_up</mat-icon>
+        <span class="progress-text">{{ progressText }}</span>
+        <div class="progress-ring">
+          <svg class="progress-svg" width="24" height="24">
+            <circle
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="var(--border-light)"
+              stroke-width="2"
+              fill="none"/>
+            <circle
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="var(--primary-color)"
+              stroke-width="2"
+              fill="none"
+              [style.stroke-dasharray]="progressCircumference"
+              [style.stroke-dashoffset]="progressOffset"
+              class="progress-circle"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- 主题切换按钮 -->
+      <button
+        mat-icon-button
+        (click)="toggleTheme()"
+        [matTooltip]="themeTooltip"
+        class="theme-toggle action-button"
+        [attr.aria-label]="themeTooltip">
+        <mat-icon class="theme-icon">{{ themeIcon }}</mat-icon>
+        <div class="button-ripple"></div>
+      </button>
+
+      <!-- 快捷键帮助 -->
+      <button
+        mat-icon-button
+        (click)="showKeyboardShortcuts()"
+        matTooltip="键盘快捷键 (F1)"
+        class="shortcuts-button action-button"
+        aria-label="显示键盘快捷键">
+        <mat-icon>keyboard</mat-icon>
+        <div class="button-ripple"></div>
+      </button>
+
+      <!-- 用户菜单 -->
+      <button
+        mat-icon-button
+        [matMenuTriggerFor]="userMenu"
+        class="user-menu-trigger action-button"
+        aria-label="用户菜单">
+        <div class="user-avatar">
+          <mat-icon>account_circle</mat-icon>
+          <div class="avatar-status"></div>
+        </div>
+        <div class="button-ripple"></div>
+      </button>
+
+      <mat-menu #userMenu="matMenu" class="user-menu">
+        <button mat-menu-item (click)="openProfile()">
+          <mat-icon>person</mat-icon>
+          <span>个人资料</span>
+          <kbd class="menu-shortcut">Ctrl+P</kbd>
+        </button>
+        <button mat-menu-item (click)="openSettings()">
+          <mat-icon>settings</mat-icon>
+          <span>设置</span>
+          <kbd class="menu-shortcut">Ctrl+,</kbd>
+        </button>
+        <mat-divider></mat-divider>
+        <button mat-menu-item (click)="showHelp()">
+          <mat-icon>help</mat-icon>
+          <span>帮助</span>
+          <kbd class="menu-shortcut">F1</kbd>
+        </button>
+        <button mat-menu-item (click)="showAbout()">
+          <mat-icon>info</mat-icon>
+          <span>关于</span>
+        </button>
+      </mat-menu>
+    </div>
   </div>
 
-  <!-- 中间：导航菜单 -->
-  <div class="header-center">
-    <nav class="nav-menu">
-      <a mat-button routerLink="/home" routerLinkActive="active" class="nav-link">
+  <!-- 移动端导航菜单 -->
+  <div class="mobile-nav" [class.open]="mobileMenuOpen" role="navigation" aria-label="移动端导航">
+    <div class="mobile-nav-content">
+      <a
+        mat-button
+        routerLink="/home"
+        routerLinkActive="active"
+        class="mobile-nav-link"
+        (click)="closeMobileMenu()">
         <mat-icon>home</mat-icon>
         <span>首页</span>
       </a>
-      <a mat-button routerLink="/lesson" routerLinkActive="active" class="nav-link">
+      <a
+        mat-button
+        routerLink="/lesson"
+        routerLinkActive="active"
+        class="mobile-nav-link"
+        (click)="closeMobileMenu()">
         <mat-icon>school</mat-icon>
         <span>课程</span>
       </a>
-    </nav>
-  </div>
-
-  <!-- 右侧：用户操作 -->
-  <div class="header-right">
-    <!-- 主题切换按钮 -->
-    <button
-      mat-icon-button
-      (click)="toggleTheme()"
-      [matTooltip]="themeTooltip"
-      class="theme-toggle">
-      <mat-icon>{{ themeIcon }}</mat-icon>
-    </button>
-
-    <!-- 用户菜单 -->
-    <button mat-icon-button [matMenuTriggerFor]="userMenu" class="user-menu-trigger">
-      <mat-icon>account_circle</mat-icon>
-    </button>
-    <mat-menu #userMenu="matMenu">
-      <button mat-menu-item>
+      <div class="mobile-nav-divider"></div>
+      <button mat-button class="mobile-nav-link" (click)="openProfile(); closeMobileMenu()">
         <mat-icon>person</mat-icon>
         <span>个人资料</span>
       </button>
-      <button mat-menu-item>
+      <button mat-button class="mobile-nav-link" (click)="openSettings(); closeMobileMenu()">
         <mat-icon>settings</mat-icon>
         <span>设置</span>
       </button>
-      <mat-divider></mat-divider>
-      <button mat-menu-item>
-        <mat-icon>help</mat-icon>
-        <span>帮助</span>
-      </button>
-    </mat-menu>
+    </div>
   </div>
-</mat-toolbar>
+</header>

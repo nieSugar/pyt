@@ -9,6 +9,10 @@ export class NavigationService {
   private currentLessonSubject = new BehaviorSubject<Lesson | null>(null);
   public currentLesson$ = this.currentLessonSubject.asObservable();
 
+  // 侧边栏状态管理
+  private sidebarOpenSubject = new BehaviorSubject<boolean>(false);
+  public sidebarOpen$ = this.sidebarOpenSubject.asObservable();
+
   /**
    * 获取当前课程
    */
@@ -170,11 +174,40 @@ export class NavigationService {
    */
   getModuleProgress(module: Module, completedLessons: string[]): number {
     if (module.lessons.length === 0) return 0;
-    
+
     const completedCount = module.lessons.filter(lesson =>
       completedLessons.includes(lesson.id)
     ).length;
-    
+
     return (completedCount / module.lessons.length) * 100;
+  }
+
+  // 侧边栏控制方法
+  /**
+   * 打开侧边栏
+   */
+  openSidebar(): void {
+    this.sidebarOpenSubject.next(true);
+  }
+
+  /**
+   * 关闭侧边栏
+   */
+  closeSidebar(): void {
+    this.sidebarOpenSubject.next(false);
+  }
+
+  /**
+   * 切换侧边栏状态
+   */
+  toggleSidebar(): void {
+    this.sidebarOpenSubject.next(!this.sidebarOpenSubject.value);
+  }
+
+  /**
+   * 获取侧边栏状态
+   */
+  getSidebarState(): boolean {
+    return this.sidebarOpenSubject.value;
   }
 }

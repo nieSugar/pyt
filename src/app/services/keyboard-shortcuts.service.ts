@@ -1,5 +1,6 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
+import { NotificationService } from './notification.service';
 
 export interface KeyboardShortcut {
   key: string;
@@ -8,7 +9,13 @@ export interface KeyboardShortcut {
   altKey?: boolean;
   metaKey?: boolean;
   description: string;
-  action: () => void;
+  callback: () => void;
+}
+
+export interface ShortcutRegistration {
+  key: string;
+  description: string;
+  callback: () => void;
 }
 
 @Injectable({
@@ -19,7 +26,7 @@ export class KeyboardShortcutsService implements OnDestroy {
   private keydownListener?: (event: KeyboardEvent) => void;
   private destroy$ = new Subject<void>();
 
-  constructor() {
+  constructor(private notificationService: NotificationService) {
     this.initializeGlobalListener();
   }
 
@@ -75,7 +82,7 @@ export class KeyboardShortcutsService implements OnDestroy {
         key: 'Enter',
         ctrlKey: true,
         description: '运行代码',
-        action: callbacks.onRun
+        callback: callbacks.onRun
       });
     }
 
@@ -86,7 +93,7 @@ export class KeyboardShortcutsService implements OnDestroy {
         ctrlKey: true,
         shiftKey: true,
         description: '格式化代码',
-        action: callbacks.onFormat
+        callback: callbacks.onFormat
       });
     }
 
@@ -96,7 +103,7 @@ export class KeyboardShortcutsService implements OnDestroy {
         key: 'C',
         ctrlKey: true,
         description: '复制代码',
-        action: callbacks.onCopy
+        callback: callbacks.onCopy
       });
     }
 
@@ -106,7 +113,7 @@ export class KeyboardShortcutsService implements OnDestroy {
         key: 'S',
         ctrlKey: true,
         description: '保存',
-        action: callbacks.onSave
+        callback: callbacks.onSave
       });
     }
 
@@ -116,7 +123,7 @@ export class KeyboardShortcutsService implements OnDestroy {
         key: 'F',
         ctrlKey: true,
         description: '查找',
-        action: callbacks.onFind
+        callback: callbacks.onFind
       });
     }
   }
@@ -136,7 +143,7 @@ export class KeyboardShortcutsService implements OnDestroy {
         key: 'ArrowRight',
         altKey: true,
         description: '下一课',
-        action: callbacks.onNext
+        callback: callbacks.onNext
       });
     }
 
@@ -146,7 +153,7 @@ export class KeyboardShortcutsService implements OnDestroy {
         key: 'ArrowLeft',
         altKey: true,
         description: '上一课',
-        action: callbacks.onPrevious
+        callback: callbacks.onPrevious
       });
     }
 
@@ -156,7 +163,7 @@ export class KeyboardShortcutsService implements OnDestroy {
         key: 'H',
         altKey: true,
         description: '返回首页',
-        action: callbacks.onHome
+        callback: callbacks.onHome
       });
     }
 
@@ -165,7 +172,7 @@ export class KeyboardShortcutsService implements OnDestroy {
       this.registerShortcut({
         key: 'F1',
         description: '帮助',
-        action: callbacks.onHelp
+        callback: callbacks.onHelp
       });
     }
   }
@@ -184,7 +191,7 @@ export class KeyboardShortcutsService implements OnDestroy {
         event.stopPropagation();
         
         // 执行快捷键动作
-        shortcut.action();
+        shortcut.callback();
       }
     };
 
@@ -258,5 +265,48 @@ export class KeyboardShortcutsService implements OnDestroy {
   isShortcutRegistered(shortcut: Partial<KeyboardShortcut>): boolean {
     const key = this.generateShortcutKey(shortcut as KeyboardShortcut);
     return this.shortcuts.has(key);
+  }
+
+  /**
+   * 注册快捷键（简化版本）
+   */
+  register(shortcuts: ShortcutRegistration[]): void {
+    shortcuts.forEach(shortcut => {
+      // 解析快捷键字符串
+      const parts = shortcut.key.toLowerCase().split('+');
+      const key = parts.pop() || '';
+
+      const keyboardShortcut: KeyboardShortcut = {
+        key: key === 'comma' ? ',' : key,
+        ctrlKey: parts.includes('ctrl'),
+        shiftKey: parts.includes('shift'),
+        altKey: parts.includes('alt'),
+        metaKey: parts.includes('meta') || parts.includes('cmd'),
+        description: shortcut.description,
+        callback: shortcut.callback
+      };
+
+      this.registerShortcut(keyboardShortcut);
+    });
+  }
+
+  /**
+   * 显示快捷键帮助对话框
+   */
+  showShortcutsDialog(): void {
+    const shortcuts = this.getAllShortcuts();
+    if (shortcuts.length === 0) {
+      this.notificationService.showInfo('暂无可用的快捷键', '快捷键帮助');
+      return;
+    }
+
+    // 构建快捷键列表文本
+    const shortcutsList = shortcuts
+      .map(shortcut => `${this.formatShortcutDisplay(shortcut)}: ${shortcut.description}`)
+      .join('\n');
+
+    const message = `可用的键盘快捷键：\n\n${shortcutsList}`;
+
+    this.notificationService.showInfo(message, '键盘快捷键帮助');
   }
 }

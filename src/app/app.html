@@ -6,10 +6,21 @@
   <!-- 主要内容区域 -->
   <div class="main-content">
     <!-- 侧边栏 -->
-    <app-sidebar class="sidebar"></app-sidebar>
+    <app-sidebar
+      class="sidebar"
+      [class.mobile-open]="sidebarOpen">
+    </app-sidebar>
+
+    <!-- 移动端遮罩层 -->
+    <div
+      class="mobile-overlay"
+      [class.active]="sidebarOpen"
+      (click)="closeSidebar()"
+      aria-hidden="true">
+    </div>
 
     <!-- 内容区域 -->
-    <main class="content-area">
+    <main class="content-area" role="main">
       <router-outlet></router-outlet>
     </main>
   </div>

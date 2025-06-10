@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, OnChanges, SimpleChanges, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MarkdownModule } from 'ngx-markdown';
 import { MatButtonModule } from '@angular/material/button';
@@ -27,7 +27,7 @@ import { Clipboard } from '@angular/cdk/clipboard';
   styleUrls: ['./enhanced-markdown.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class EnhancedMarkdown implements OnInit, OnDestroy {
+export class EnhancedMarkdown implements OnInit, OnChanges, OnDestroy {
   @Input() content: string = '';
   @Input() enableCodeCopy: boolean = true;
   @Input() enableSyntaxHighlight: boolean = true;
@@ -41,6 +41,12 @@ export class EnhancedMarkdown implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.renderContent();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['content'] && !changes['content'].firstChange) {
+      this.renderContent();
+    }
   }
 
   ngOnDestroy(): void {
