@@ -1,18 +1,41 @@
 <div class="sidebar-container" *ngIf="course">
-  <!-- 课程信息头部 -->
+  <!-- 简化的课程信息头部 -->
   <div class="course-header">
-    <div class="course-info">
-      <h3 class="course-title">{{ course.title }}</h3>
-      <p class="course-description">{{ course.description }}</p>
+    <div class="course-info-card">
+      <div class="course-header-content">
+        <span class="course-avatar">🎓</span>
+        <div class="course-title-section">
+          <h3 class="course-title">{{ course.title }}</h3>
+          <p class="course-description">{{ course.description }}</p>
+        </div>
+      </div>
+
       <div class="course-meta">
-        <span class="difficulty-badge" [class]="'difficulty-' + course.difficulty">
-          {{ course.difficulty === 'beginner' ? '初级' :
-             course.difficulty === 'intermediate' ? '中级' : '高级' }}
-        </span>
-        <span class="time-estimate">
-          <mat-icon>schedule</mat-icon>
-          {{ course.estimatedTime }}
-        </span>
+        <div class="difficulty-section">
+          <span class="difficulty-chip" [class]="'difficulty-' + course.difficulty">
+            <span class="difficulty-icon">{{ getDifficultyIcon(course.difficulty) }}</span>
+            {{ getDifficultyText(course.difficulty) }}
+          </span>
+
+          <div class="time-estimate">
+            <span class="time-icon">⏰</span>
+            <span>{{ course.estimatedTime }}</span>
+          </div>
+        </div>
+
+        <!-- 总体进度 -->
+        <div class="overall-progress">
+          <div class="progress-header">
+            <span class="progress-label">总体进度</span>
+            <span class="progress-percentage">{{ getOverallProgress() | number:'1.0-0' }}%</span>
+          </div>
+          <div class="progress-bar-container">
+            <div class="progress-bar" [style.width.%]="getOverallProgress()"></div>
+          </div>
+          <div class="progress-stats">
+            <span>{{ (userProgress?.completedLessons?.length || 0) }} / {{ getTotalLessons() }} 课程完成</span>
+          </div>
+        </div>
       </div>
     </div>
 

@@ -1,29 +1,60 @@
 <div class="home-container">
-  <!-- 欢迎横幅 -->
+  <!-- 增强的欢迎横幅 -->
   <section class="welcome-banner">
+    <div class="banner-background">
+      <div class="gradient-overlay"></div>
+      <div class="pattern-overlay"></div>
+    </div>
+
     <div class="banner-content">
       <div class="welcome-text">
-        <h1>欢迎来到 Python 学习平台</h1>
-        <p>从零开始，掌握 Python 编程技能</p>
+        <h1 class="main-title">
+          <span class="title-highlight">Python</span> 学习平台
+        </h1>
+        <p class="subtitle">从零开始，掌握现代编程技能</p>
+        <div class="feature-highlights">
+          <div class="feature-item">
+            <mat-icon>code</mat-icon>
+            <span>浏览器内运行</span>
+          </div>
+          <div class="feature-item">
+            <mat-icon>school</mat-icon>
+            <span>系统化课程</span>
+          </div>
+          <div class="feature-item">
+            <mat-icon>trending_up</mat-icon>
+            <span>进度跟踪</span>
+          </div>
+        </div>
       </div>
+
       <div class="banner-actions">
         <button
           mat-raised-button
           color="primary"
-          class="cta-button"
+          class="cta-button primary-cta"
           (click)="startLearning()"
           *ngIf="stats.completedLessons === 0">
-          <mat-icon>play_arrow</mat-icon>
-          开始学习
+          <mat-icon>rocket_launch</mat-icon>
+          开始学习之旅
         </button>
         <button
           mat-raised-button
           color="primary"
-          class="cta-button"
+          class="cta-button primary-cta"
           (click)="continueLearning()"
           *ngIf="stats.completedLessons > 0">
           <mat-icon>play_arrow</mat-icon>
           继续学习
+        </button>
+
+        <button
+          mat-stroked-button
+          color="primary"
+          class="cta-button secondary-cta"
+          (click)="viewCourseOverview()">
+          <mat-icon>visibility</mat-icon>
+          浏览课程
         </button>
       </div>
     </div>

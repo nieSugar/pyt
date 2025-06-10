@@ -269,6 +269,154 @@
   }
 }
 
+// 新的简化样式
+.course-info-card {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 20px;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+
+  .course-header-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 16px;
+
+    .course-avatar {
+      font-size: 32px;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      backdrop-filter: blur(8px);
+    }
+
+    .course-title-section {
+      flex: 1;
+
+      .course-title {
+        margin: 0 0 8px 0;
+        font-size: 20px;
+        font-weight: 700;
+        color: white;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        line-height: 1.3;
+      }
+
+      .course-description {
+        margin: 0;
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.9);
+        line-height: 1.4;
+      }
+    }
+  }
+
+  .course-meta {
+    .difficulty-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+
+      .difficulty-chip {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 16px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+
+        &.difficulty-beginner {
+          background: rgba(34, 197, 94, 0.2);
+          color: #22c55e;
+        }
+
+        &.difficulty-intermediate {
+          background: rgba(245, 158, 11, 0.2);
+          color: #f59e0b;
+        }
+
+        &.difficulty-advanced {
+          background: rgba(239, 68, 68, 0.2);
+          color: #ef4444;
+        }
+
+        .difficulty-icon {
+          font-size: 14px;
+        }
+      }
+
+      .time-estimate {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.8);
+        background: rgba(255, 255, 255, 0.1);
+        padding: 4px 8px;
+        border-radius: 12px;
+        backdrop-filter: blur(8px);
+
+        .time-icon {
+          font-size: 14px;
+        }
+      }
+    }
+
+    .overall-progress {
+      .progress-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+
+        .progress-label {
+          font-size: 14px;
+          font-weight: 600;
+          color: rgba(255, 255, 255, 0.9);
+        }
+
+        .progress-percentage {
+          font-size: 14px;
+          font-weight: 700;
+          color: #22d3ee;
+        }
+      }
+
+      .progress-bar-container {
+        height: 10px;
+        border-radius: 5px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.2);
+        margin-bottom: 8px;
+
+        .progress-bar {
+          height: 100%;
+          background: linear-gradient(90deg, #22d3ee, #06b6d4);
+          border-radius: 5px;
+          transition: width 0.3s ease;
+        }
+      }
+
+      .progress-stats {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.8);
+        text-align: center;
+      }
+    }
+  }
+}
+
 // 深色主题适配
 :host-context(.dark-theme) {
   .sidebar-container {

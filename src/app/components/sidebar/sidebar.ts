@@ -8,6 +8,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatTooltipModule } from '@angular/material/tooltip';
+
 import { Subscription } from 'rxjs';
 import { CourseService } from '../../services/course.service';
 import { Course, Module, Lesson, UserProgress } from '../../models/course.model';
@@ -108,5 +109,61 @@ export class Sidebar implements OnInit, OnDestroy {
     } else {
       return 'radio_button_unchecked';
     }
+  }
+
+  /**
+   * 获取难度颜色
+   */
+  getDifficultyColor(difficulty: string): 'primary' | 'accent' | 'warn' {
+    switch (difficulty) {
+      case 'beginner':
+        return 'primary';
+      case 'intermediate':
+        return 'accent';
+      case 'advanced':
+        return 'warn';
+      default:
+        return 'primary';
+    }
+  }
+
+  /**
+   * 获取难度图标
+   */
+  getDifficultyIcon(difficulty: string): string {
+    switch (difficulty) {
+      case 'beginner':
+        return 'star_border';
+      case 'intermediate':
+        return 'star_half';
+      case 'advanced':
+        return 'star';
+      default:
+        return 'star_border';
+    }
+  }
+
+  /**
+   * 获取难度文本
+   */
+  getDifficultyText(difficulty: string): string {
+    switch (difficulty) {
+      case 'beginner':
+        return '初级';
+      case 'intermediate':
+        return '中级';
+      case 'advanced':
+        return '高级';
+      default:
+        return '初级';
+    }
+  }
+
+  /**
+   * 获取总课程数
+   */
+  getTotalLessons(): number {
+    if (!this.course) return 0;
+    return this.course.modules.reduce((total, module) => total + module.lessons.length, 0);
   }
 }

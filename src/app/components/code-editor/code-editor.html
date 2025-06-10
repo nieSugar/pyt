@@ -1,23 +1,68 @@
 <div class="code-editor-container">
-  <!-- 编辑器工具栏 -->
+  <!-- 简化的编辑器工具栏 -->
   <div class="editor-toolbar">
     <div class="toolbar-left">
-      <span class="editor-title">Python 代码编辑器</span>
+      <span class="editor-title">
+        <span class="title-icon">💻</span>
+        Python 代码编辑器
+      </span>
+      <div class="editor-status">
+        <span class="status-chip" [class.ready]="pythonExecutor.isReady()" [class.loading]="!pythonExecutor.isReady()">
+          <span class="status-icon">
+            {{ pythonExecutor.isReady() ? '✓' : '⏳' }}
+          </span>
+          {{ pythonExecutor.isReady() ? '就绪' : '加载中' }}
+        </span>
+      </div>
     </div>
+
+    <div class="toolbar-center">
+      <!-- 快捷操作按钮 -->
+      <button
+        type="button"
+        title="格式化代码 (Ctrl+Shift+F)"
+        (click)="formatCode()"
+        class="action-btn">
+        <span class="btn-icon">🎨</span>
+      </button>
+
+      <button
+        type="button"
+        title="复制代码 (Ctrl+C)"
+        (click)="copyCode()"
+        class="action-btn">
+        <span class="btn-icon">📋</span>
+      </button>
+
+      <button
+        type="button"
+        title="重置代码"
+        (click)="resetCode()"
+        class="action-btn">
+        <span class="btn-icon">🔄</span>
+      </button>
+    </div>
+
     <div class="toolbar-right">
       <button
-        class="btn btn-primary"
+        type="button"
         [disabled]="isExecuting || !pythonExecutor.isReady()"
-        (click)="executeCode()">
-        <span *ngIf="isExecuting" class="spinner"></span>
-        <span *ngIf="!isExecuting">▶ 运行代码</span>
-        <span *ngIf="isExecuting">执行中...</span>
+        (click)="executeCode()"
+        class="run-button"
+        title="运行代码 (Ctrl+Enter)">
+        <span *ngIf="!isExecuting" class="btn-icon">▶️</span>
+        <span *ngIf="isExecuting" class="spinner">⏳</span>
+        <span>{{ isExecuting ? '执行中...' : '运行代码' }}</span>
       </button>
+
       <button
-        class="btn btn-secondary"
+        type="button"
         (click)="clearOutput()"
-        [disabled]="!executionResult">
-        清除输出
+        [disabled]="!executionResult"
+        title="清除输出"
+        class="clear-button">
+        <span class="btn-icon">🗑️</span>
+        清除
       </button>
     </div>
   </div>
@@ -25,6 +70,16 @@
   <!-- Monaco 编辑器容器 -->
   <div class="editor-wrapper">
     <div #editorContainer class="monaco-editor-container"></div>
+
+    <!-- 代码执行快捷提示 -->
+    <div class="editor-overlay" *ngIf="!pythonExecutor.isReady()">
+      <div class="loading-overlay">
+        <div class="progress-bar">
+          <div class="progress-fill"></div>
+        </div>
+        <p>正在初始化 Python 环境...</p>
+      </div>
+    </div>
   </div>
 
   <!-- Python 解释器状态 -->
@@ -35,32 +90,63 @@
     </div>
   </div>
 
-  <!-- 代码执行结果 -->
-  <div *ngIf="executionResult" class="execution-result">
-    <div class="result-header">
-      <span class="result-title">执行结果</span>
-      <span class="execution-time">执行时间: {{executionResult.executionTime}}ms</span>
-    </div>
+  <!-- 简化的输出区域 -->
+  <div class="output-section" *ngIf="executionResult">
+    <div class="output-card">
+      <div class="output-header">
+        <div class="output-title">
+          <span class="output-icon">
+            {{ executionResult.error ? '❌' : '📟' }}
+          </span>
+          {{ executionResult.error ? '执行错误' : '输出结果' }}
+        </div>
+        <div class="execution-info">
+          <span class="time-chip">
+            <span class="time-icon">⏱️</span>
+            {{ executionResult.executionTime }}ms
+          </span>
+          <button
+            type="button"
+            title="复制输出"
+            (click)="copyOutput()"
+            class="copy-output-btn">
+            📋
+          </button>
+        </div>
+      </div>
 
-    <!-- 成功输出 -->
-    <div *ngIf="executionResult.output && !executionResult.error" class="output success">
-      <pre>{{executionResult.output}}</pre>
-    </div>
+      <div class="output-content">
+        <div class="output-wrapper">
+          <pre
+            class="output-text"
+            [class.error]="executionResult.error"
+            [class.success]="!executionResult.error && executionResult.output">{{ executionResult.error || executionResult.output }}</pre>
 
-    <!-- 错误输出 -->
-    <div *ngIf="executionResult.error" class="output error">
-      <div class="error-header">❌ 错误</div>
-      <pre>{{executionResult.error}}</pre>
-    </div>
-
-    <!-- 空输出 -->
-    <div *ngIf="!executionResult.output && !executionResult.error" class="output empty">
-      <p>代码执行完成，无输出内容</p>
+          <!-- 输出为空时的提示 -->
+          <div class="empty-output" *ngIf="!executionResult.output && !executionResult.error">
+            <span class="info-icon">ℹ️</span>
+            <span>代码执行完成，无输出内容</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- 快捷键提示 -->
-  <div class="keyboard-shortcuts">
-    <small>💡 提示: 按 Ctrl+Enter (Mac: Cmd+Enter) 快速运行代码</small>
+  <!-- 代码执行提示 -->
+  <div class="execution-tips" *ngIf="!executionResult && !isExecuting">
+    <div class="tips-card">
+      <div class="tips-content">
+        <span class="tips-icon">💡</span>
+        <div class="tips-text">
+          <h4>快捷键提示</h4>
+          <ul>
+            <li><kbd>Ctrl + Enter</kbd> - 运行代码</li>
+            <li><kbd>Ctrl + Shift + F</kbd> - 格式化代码</li>
+            <li><kbd>Ctrl + /</kbd> - 注释/取消注释</li>
+            <li><kbd>Tab</kbd> - 缩进</li>
+          </ul>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

@@ -157,4 +157,32 @@ export class Home implements OnInit, OnDestroy {
       default: return 'description';
     }
   }
+
+  /**
+   * 查看课程概览
+   */
+  viewCourseOverview(): void {
+    // 导航到课程页面
+    window.location.href = '/lesson';
+  }
+
+  /**
+   * 获取完成百分比
+   */
+  getCompletionPercentage(): number {
+    return this.getProgressPercentage();
+  }
+
+  /**
+   * 格式化时间显示
+   */
+  formatTime(minutes: number): string {
+    if (minutes < 60) {
+      return `${minutes}分钟`;
+    } else {
+      const hours = Math.floor(minutes / 60);
+      const remainingMinutes = minutes % 60;
+      return `${hours}小时${remainingMinutes > 0 ? remainingMinutes + '分钟' : ''}`;
+    }
+  }
 }
