@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, OnDestroy, OnChanges, SimpleChanges, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -20,7 +20,7 @@ declare var monaco: any;
   templateUrl: './code-editor.html',
   styleUrl: './code-editor.scss'
 })
-export class CodeEditorComponent implements OnInit, OnDestroy, AfterViewInit {
+export class CodeEditorComponent implements OnInit, OnDestroy, OnChanges, AfterViewInit {
   @ViewChild('editorContainer', { static: true }) editorContainer!: ElementRef;
   @Input() initialCode: string = '';
   @Input() readOnly: boolean = false;
@@ -29,6 +29,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   private editor: any;
   private themeSubscription?: Subscription;
+  private isEditorInitialized = false;
 
   public isExecuting = false;
   public executionResult: CodeExecutionResult | null = null;
@@ -46,6 +47,13 @@ export class CodeEditorComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit(): void {
     // Monaco 编辑器将在 loadMonacoEditor 完成后初始化
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // 当 initialCode 发生变化时，更新编辑器内容
+    if (changes['initialCode'] && !changes['initialCode'].firstChange) {
+      this.updateEditorCode(changes['initialCode'].currentValue);
+    }
   }
 
   ngOnDestroy(): void {
@@ -113,6 +121,9 @@ export class CodeEditorComponent implements OnInit, OnDestroy, AfterViewInit {
       tabSize: 4,
       insertSpaces: true
     });
+
+    // 标记编辑器已初始化
+    this.isEditorInitialized = true;
 
     // 监听代码变化
     this.editor.onDidChangeModelContent(() => {
@@ -196,6 +207,29 @@ export class CodeEditorComponent implements OnInit, OnDestroy, AfterViewInit {
   public setCode(code: string): void {
     if (this.editor) {
       this.editor.setValue(code);
+    }
+  }
+
+  /**
+   * 更新编辑器代码（内部方法）
+   */
+  private updateEditorCode(code: string): void {
+    if (this.isEditorInitialized && this.editor) {
+      // 保存当前光标位置
+      const position = this.editor.getPosition();
+
+      // 设置新代码
+      this.editor.setValue(code || '');
+
+      // 尝试恢复光标位置（如果位置仍然有效）
+      if (position) {
+        try {
+          this.editor.setPosition(position);
+        } catch (e) {
+          // 如果位置无效，将光标设置到文档末尾
+          this.editor.setPosition(this.editor.getModel()?.getLineCount() || 1, 1);
+        }
+      }
     }
   }
 

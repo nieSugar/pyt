@@ -101,6 +101,62 @@ print(f"√16 = {calc.sqrt(16)}")
 
 print()
 calc.show_history()`,
+          exercise: {
+            id: 'calculator-exercise',
+            description: '创建一个简单的计算器程序',
+            initialCode: `# 计算器练习
+# 请完成一个简单的计算器类
+
+class Calculator:
+    def __init__(self):
+        # 初始化计算器
+        pass
+
+    def add(self, a, b):
+        # 实现加法
+        pass
+
+    def subtract(self, a, b):
+        # 实现减法
+        pass
+
+    def multiply(self, a, b):
+        # 实现乘法
+        pass
+
+    def divide(self, a, b):
+        # 实现除法（注意处理除零错误）
+        pass
+
+# 测试你的计算器
+calc = Calculator()
+
+# 测试加法
+result1 = calc.add(10, 5)
+print(f"10 + 5 = {result1}")
+
+# 测试减法
+result2 = calc.subtract(10, 3)
+print(f"10 - 3 = {result2}")
+
+# 测试乘法
+result3 = calc.multiply(4, 6)
+print(f"4 × 6 = {result3}")
+
+# 测试除法
+result4 = calc.divide(15, 3)
+print(f"15 ÷ 3 = {result4}")`,
+            expectedOutput: `10 + 5 = 15
+10 - 3 = 7
+4 × 6 = 24
+15 ÷ 3 = 5.0`,
+            hints: [
+              '在每个方法中返回计算结果',
+              '除法时要检查除数是否为零',
+              '可以使用 if 语句来处理除零情况',
+              '记住 Python 中除法的结果是浮点数'
+            ]
+          },
           order: 1,
           completed: false
         },
