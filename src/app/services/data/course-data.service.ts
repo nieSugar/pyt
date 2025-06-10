@@ -8,6 +8,9 @@ import { ExceptionHandlingModule } from './modules/exception-handling.module';
 import { FileOperationsModule } from './modules/file-operations.module';
 import { ObjectOrientedModule } from './modules/object-oriented.module';
 import { ProjectsModule } from './modules/projects.module';
+import { WebScrapingModule } from './modules/web-scraping.module';
+import { DataVisualizationModule } from './modules/data-visualization.module';
+import { DatabaseOperationsModule } from './modules/database-operations.module';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +25,10 @@ export class CourseDataService {
     private exceptionHandlingModule: ExceptionHandlingModule,
     private fileOperationsModule: FileOperationsModule,
     private objectOrientedModule: ObjectOrientedModule,
-    private projectsModule: ProjectsModule
+    private projectsModule: ProjectsModule,
+    private webScrapingModule: WebScrapingModule,
+    private dataVisualizationModule: DataVisualizationModule,
+    private databaseOperationsModule: DatabaseOperationsModule
   ) {}
 
   /**
@@ -37,7 +43,10 @@ export class CourseDataService {
       this.exceptionHandlingModule.getModule(),
       this.fileOperationsModule.getModule(),
       this.objectOrientedModule.getModule(),
-      this.projectsModule.getModule()
+      this.projectsModule.getModule(),
+      this.webScrapingModule.getModule(),
+      this.dataVisualizationModule.getModule(),
+      this.databaseOperationsModule.getModule()
     ];
   }
 

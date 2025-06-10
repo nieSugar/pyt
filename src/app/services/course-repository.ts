@@ -15,10 +15,10 @@ export class CourseRepository {
   getDefaultCourse(): Course {
     return {
       id: 'python-basics',
-      title: 'Python 基础教程',
-      description: '从零开始学习 Python 编程语言',
-      totalLessons: 71,
-      estimatedTime: '95 小时',
+      title: 'Python 完整教程',
+      description: '从零开始学习 Python 编程语言，包含基础语法、高级特性、Web爬虫、数据可视化和数据库操作',
+      totalLessons: 82,
+      estimatedTime: '120 小时',
       difficulty: 'beginner',
       modules: this.courseDataService.getAllModules()
     };
