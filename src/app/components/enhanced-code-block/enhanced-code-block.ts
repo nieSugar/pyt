@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy, ElementRef, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, OnChanges, SimpleChanges, ElementRef, ViewChild, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -89,7 +89,7 @@ import 'prismjs/themes/prism-tomorrow.css';
   `,
   styleUrl: './enhanced-code-block.scss'
 })
-export class EnhancedCodeBlockComponent implements OnInit, OnDestroy {
+export class EnhancedCodeBlockComponent implements OnInit, OnDestroy, OnChanges {
   @Input() code: string = '';
   @Input() editable: boolean = false;
   @Input() showLineNumbers: boolean = true;
@@ -116,13 +116,31 @@ export class EnhancedCodeBlockComponent implements OnInit, OnDestroy {
     }
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    // 当代码输入发生变化时，重新更新高亮显示
+    if (changes['code'] && !changes['code'].firstChange) {
+      this.updateHighlighting();
+      // 清除之前的执行结果
+      this.executionResult = null;
+
+      // 如果启用了自动执行且有新代码，则自动执行
+      if (this.autoExecute && this.code.trim()) {
+        setTimeout(() => this.executeCode(), 500);
+      }
+    }
+  }
+
   ngOnDestroy(): void {
     // 清理资源
   }
 
   private updateHighlighting(): void {
-    if (!this.code) return;
-    
+    if (!this.code) {
+      this.highlightedCode = '';
+      this.lineCount = 0;
+      return;
+    }
+
     this.lineCount = this.code.split('\n').length;
     this.highlightedCode = Prism.highlight(this.code, Prism.languages['python'], 'python');
   }
