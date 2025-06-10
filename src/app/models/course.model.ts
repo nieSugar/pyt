@@ -19,6 +19,7 @@ export interface Module {
 export interface Lesson {
   id: string;
   title: string;
+  description?: string;
   content: string;
   type: 'tutorial' | 'exercise' | 'quiz';
   codeExample?: string;
@@ -26,6 +27,7 @@ export interface Lesson {
   quiz?: Quiz;
   order: number;
   completed: boolean;
+  estimatedTime?: string;
 }
 
 export interface Exercise {

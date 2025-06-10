@@ -12,6 +12,7 @@ import { Lesson as LessonModel, Course, UserProgress } from '../../models/course
 import { LessonContent } from '../../components/lesson-content/lesson-content';
 import { CodeEditorComponent } from '../../components/code-editor/code-editor';
 import { EnhancedCodeBlockComponent } from '../../components/enhanced-code-block/enhanced-code-block';
+import { Sidebar } from '../../components/sidebar/sidebar';
 
 @Component({
   selector: 'app-lesson',
@@ -24,7 +25,8 @@ import { EnhancedCodeBlockComponent } from '../../components/enhanced-code-block
     MatChipsModule,
     LessonContent,
     CodeEditorComponent,
-    EnhancedCodeBlockComponent
+    EnhancedCodeBlockComponent,
+    Sidebar
   ],
   templateUrl: './lesson.html',
   styleUrl: './lesson.scss'
@@ -158,5 +160,57 @@ export class Lesson implements OnInit, OnDestroy {
       case 'quiz': return '测验';
       default: return '';
     }
+  }
+
+  /**
+   * 获取已完成课程的数组（用于进度点显示）
+   */
+  getCompletedLessonsArray(): number[] {
+    if (!this.course || !this.currentLesson) return [];
+
+    const currentPosition = this.getCurrentLessonPosition();
+    return Array.from({ length: currentPosition - 1 }, (_, i) => i);
+  }
+
+  /**
+   * 获取剩余课程的数组（用于进度点显示）
+   */
+  getRemainingLessonsArray(): number[] {
+    if (!this.course || !this.currentLesson) return [];
+
+    const currentPosition = this.getCurrentLessonPosition();
+    const totalLessons = this.getTotalLessonsCount();
+    const remainingCount = totalLessons - currentPosition;
+
+    return Array.from({ length: remainingCount }, (_, i) => i);
+  }
+
+  /**
+   * 获取当前课程在整个课程中的位置
+   */
+  getCurrentLessonPosition(): number {
+    if (!this.course || !this.currentLesson) return 1;
+
+    let position = 1;
+    for (const module of this.course.modules) {
+      for (const lesson of module.lessons) {
+        if (lesson.id === this.currentLesson.id) {
+          return position;
+        }
+        position++;
+      }
+    }
+    return 1;
+  }
+
+  /**
+   * 获取课程总数
+   */
+  getTotalLessonsCount(): number {
+    if (!this.course) return 0;
+
+    return this.course.modules.reduce((total, module) => {
+      return total + module.lessons.length;
+    }, 0);
   }
 }

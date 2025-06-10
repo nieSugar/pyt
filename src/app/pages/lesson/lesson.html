@@ -1,6 +1,6 @@
-<div class="lesson-page-container" *ngIf="currentLesson">
+<div class="lesson-page-container">
   <!-- 课程头部信息 -->
-  <div class="lesson-header">
+  <div class="lesson-header" *ngIf="currentLesson">
     <mat-card class="header-card">
       <mat-card-content>
         <div class="lesson-info">
@@ -54,12 +54,18 @@
 
   <!-- 课程内容区域 -->
   <div class="lesson-body">
+    <!-- 左侧边栏 -->
+    <div class="sidebar-wrapper">
+      <app-sidebar></app-sidebar>
+    </div>
+
+    <!-- 中间内容区域 -->
     <div class="content-section">
       <!-- 课程内容 -->
       <app-lesson-content [lesson]="currentLesson"></app-lesson-content>
 
       <!-- 代码示例和编辑器 -->
-      <div class="code-section" *ngIf="currentLesson.codeExample">
+      <div class="code-section" *ngIf="currentLesson?.codeExample">
         <mat-card class="code-card">
           <mat-card-header>
             <mat-card-title>
@@ -71,7 +77,7 @@
           <mat-card-content>
             <!-- 使用增强的代码块组件 -->
             <app-enhanced-code-block
-              [code]="currentLesson.codeExample"
+              [code]="currentLesson?.codeExample || ''"
               [editable]="false"
               [autoExecute]="true">
             </app-enhanced-code-block>
@@ -80,89 +86,111 @@
       </div>
 
       <!-- 练习区域 -->
-      <div class="exercise-section" *ngIf="currentLesson.exercise">
+      <div class="exercise-section" *ngIf="currentLesson?.exercise">
         <mat-card class="exercise-card">
           <mat-card-header>
             <mat-card-title>
               <mat-icon>assignment</mat-icon>
               编程练习
             </mat-card-title>
-            <mat-card-subtitle>{{ currentLesson.exercise.description }}</mat-card-subtitle>
+            <mat-card-subtitle>{{ currentLesson?.exercise?.description }}</mat-card-subtitle>
           </mat-card-header>
           <mat-card-content>
-            <div class="exercise-hints" *ngIf="currentLesson.exercise.hints">
+            <div class="exercise-hints" *ngIf="currentLesson?.exercise?.hints">
               <h4>提示：</h4>
               <ul>
-                <li *ngFor="let hint of currentLesson.exercise.hints">{{ hint }}</li>
+                <li *ngFor="let hint of currentLesson?.exercise?.hints">{{ hint }}</li>
               </ul>
             </div>
 
             <app-code-editor
-              [initialCode]="currentLesson.exercise.initialCode"
+              [initialCode]="currentLesson?.exercise?.initialCode || ''"
               [readOnly]="false">
             </app-code-editor>
 
-            <div class="expected-output" *ngIf="currentLesson.exercise.expectedOutput">
+            <div class="expected-output" *ngIf="currentLesson?.exercise?.expectedOutput">
               <h4>期望输出：</h4>
-              <pre class="output-preview">{{ currentLesson.exercise.expectedOutput }}</pre>
+              <pre class="output-preview">{{ currentLesson?.exercise?.expectedOutput }}</pre>
             </div>
           </mat-card-content>
         </mat-card>
       </div>
     </div>
 
-    <!-- 导航侧边栏 -->
+    <!-- 优化的课程导航 -->
     <div class="navigation-section">
-      <mat-card class="navigation-card">
-        <mat-card-header>
-          <mat-card-title>课程导航</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <div class="lesson-navigation">
-            <div class="nav-item previous" *ngIf="getPreviousLesson()">
-              <button
-                mat-button
-                class="nav-button"
-                (click)="goToPreviousLesson()">
-                <div class="nav-content">
-                  <mat-icon>navigate_before</mat-icon>
-                  <div class="nav-text">
-                    <span class="nav-label">上一课</span>
-                    <span class="nav-title">{{ getPreviousLesson()?.title }}</span>
-                  </div>
-                </div>
-              </button>
-            </div>
+      <div class="navigation-container">
+        <div class="navigation-header">
+          <mat-icon class="nav-icon">explore</mat-icon>
+          <h3 class="nav-title">课程导航</h3>
+        </div>
 
-            <div class="nav-item next" *ngIf="getNextLesson()">
-              <button
-                mat-button
-                class="nav-button"
-                (click)="goToNextLesson()">
-                <div class="nav-content">
-                  <div class="nav-text">
-                    <span class="nav-label">下一课</span>
-                    <span class="nav-title">{{ getNextLesson()?.title }}</span>
-                  </div>
-                  <mat-icon>navigate_next</mat-icon>
+        <div class="lesson-navigation">
+          <!-- 上一课导航 -->
+          <div class="nav-item previous" *ngIf="getPreviousLesson()">
+            <button
+              mat-stroked-button
+              class="nav-button prev-button"
+              (click)="goToPreviousLesson()">
+              <div class="nav-content">
+                <div class="nav-icon-wrapper">
+                  <mat-icon class="nav-arrow">keyboard_arrow_left</mat-icon>
                 </div>
-              </button>
+                <div class="nav-text">
+                  <span class="nav-label">上一课</span>
+                  <span class="nav-course-title">{{ getPreviousLesson()?.title }}</span>
+                </div>
+              </div>
+            </button>
+          </div>
+
+          <!-- 课程进度指示器 -->
+          <div class="progress-indicator">
+            <div class="progress-dots">
+              <div class="dot completed" *ngFor="let i of getCompletedLessonsArray()"></div>
+              <div class="dot current"></div>
+              <div class="dot remaining" *ngFor="let i of getRemainingLessonsArray()"></div>
+            </div>
+            <div class="progress-text">
+              <span class="current-position">{{ getCurrentLessonPosition() }}</span>
+              <span class="separator">/</span>
+              <span class="total-lessons">{{ getTotalLessonsCount() }}</span>
             </div>
           </div>
-        </mat-card-content>
-      </mat-card>
+
+          <!-- 下一课导航 -->
+          <div class="nav-item next" *ngIf="getNextLesson()">
+            <button
+              mat-flat-button
+              color="primary"
+              class="nav-button next-button"
+              (click)="goToNextLesson()">
+              <div class="nav-content">
+                <div class="nav-text">
+                  <span class="nav-label">下一课</span>
+                  <span class="nav-course-title">{{ getNextLesson()?.title }}</span>
+                </div>
+                <div class="nav-icon-wrapper">
+                  <mat-icon class="nav-arrow">keyboard_arrow_right</mat-icon>
+                </div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- 课程完成状态 -->
+        <div class="completion-status" *ngIf="!getNextLesson() && currentLesson">
+          <div class="completion-card">
+            <mat-icon class="completion-icon">celebration</mat-icon>
+            <div class="completion-text">
+              <h4>恭喜完成本模块！</h4>
+              <p>继续学习下一个模块</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- 加载状态 -->
-<div class="loading-container" *ngIf="!currentLesson">
-  <mat-card>
-    <mat-card-content>
-      <div class="loading-content">
-        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-        <p>加载课程内容中...</p>
-      </div>
-    </mat-card-content>
-  </mat-card>
-</div>
+
